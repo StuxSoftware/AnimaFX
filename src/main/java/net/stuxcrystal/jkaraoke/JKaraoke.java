@@ -43,7 +43,7 @@ import java.util.logging.*;
 public class JKaraoke {
 
     private static final String[] HEADER = {
-            "JKaraoke 0.2-SNAPSHOT",
+            "JKaraoke 0.1-Alpha.1",
             "(c) 2014 StuxCrystal",
     };
 
