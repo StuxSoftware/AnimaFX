@@ -36,13 +36,22 @@ class ProcessingContext(object):
         object.__setattr__(self, "data", {})
 
     def __getattr__(self, item):
-        return object.__getattribute__(self, "data")[item]
+        try:
+            return object.__getattribute__(self, "data")[item]
+        except:
+            raise AttributeError(item)
 
     def __setattr__(self, key, value):
         object.__getattribute__(self, "data")[key] = value
 
     def __delattr__(self, item):
-        del object.__getattribute__(self, "data")[item]
+        try:
+            del object.__getattribute__(self, "data")[item]
+        except KeyError as e:
+            raise AttributeError(item)
+
+    def __contains__(self, item):
+        return item in object.__getattribute__(self, "data")
 
     def __repr__(self):
         return "<PreprocessingContext " + ", ".join(["%s:%r"%(key, value) for key, value in object.__getattribute__(self, "data").items()]) + ">"
@@ -106,7 +115,7 @@ class MultiProcessor(Processor):
 
     def __init__(self, processors, selector=None):
         super(Processor, self).__init__()
-        self.processors = processors
+        self.processors = list(processors)
         self.selector = selector
 
     def _pre_process(self, lines, ctx):

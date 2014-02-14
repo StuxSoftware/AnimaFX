@@ -86,7 +86,7 @@ class Style(object):
         self.size = size
         self.italic = italic
         self.bold = bold
-        self.spacing = 0
+        self.spacing = spacing
 
     def text_extents(self, text):
         """
@@ -229,7 +229,7 @@ class Line(ExtensibleObject):
     Stores the data of the syllable.
     """
 
-    def __init__(self, start, end, style, anchor, margin=(10,10,10), layer=0, text=None, extensions={}):
+    def __init__(self, start, end, style, anchor, margin=(10,10,10), layer=0, text=None, extensions=None):
         """
         Creates a new line.
         """
@@ -242,7 +242,7 @@ class Line(ExtensibleObject):
         self.layer = layer
         self.raw_text = text
         self.syllables = []
-        self.extension = extensions
+        self.extension = extensions if extensions is not None else {}
 
     def write(self):
         get_environment().write_line(self)

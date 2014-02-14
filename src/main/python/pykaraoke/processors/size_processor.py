@@ -67,7 +67,49 @@ class SizeProcessor(Processor):
             obj[name] = extents[name]
 
 
-class DefaultPositionProcessor(Processor):
+class BasePositionProcessor(Processor):
+
+    def _calculate_space_correction(self, obj, ctx, octx):
+        space_correction = 0
+        space_correction += ctx.space_widths[octx.style] * (len(obj.text) - len(obj.text.rstrip()))
+        space_correction -= ctx.space_widths[octx.style] * (len(obj.text) - len(obj.text.lstrip()))
+
+        octx.space_correction = space_correction
+
+    def _calculate_top_left(self, obj, ctx, octx):
+        if octx.anchor in (7, 8, 9):
+            obj["top"] = octx.margin[2]
+            octx.anchor_y = "top"
+        elif octx.anchor in (4, 5, 6):
+            obj["top"] = (ctx.resolution[1]/2) - (obj["height"]/2)
+            octx.anchor_y = "middle"
+        elif octx.anchor in (1, 2, 3):
+            obj["top"] = ctx.resolution[1] - obj["height"] - octx.margin[2]
+            octx.anchor_y = "bottom"
+
+        if octx.anchor in (1, 4, 7):
+            obj["left"] = obj.margin[0]
+            octx.anchor_x = "left"
+        elif octx.anchor in (2, 5, 8):
+            obj["left"] = (ctx.resolution[0]/2) - (obj["width"]/2)
+            octx.anchor_x = "center"
+        elif octx.anchor in (3, 6, 9):
+            obj["left"] = ctx.resolution[0] - obj["width"] - octx.margin[1]
+            octx.anchor_x = "right"
+
+        obj["left"] -= octx.space_correction
+
+    def _calculate_points(self, obj, octx):
+        obj["middle"] = obj["top"] + obj["height"]/2
+        obj["bottom"] = obj["top"] + obj["height"]
+        obj["y"] = obj[octx.anchor_y]
+
+        obj["center"] = obj["left"] + (obj["width"] - octx.space_correction)/2
+        obj["right"] = obj["left"] + (obj["width"] - octx.space_correction)
+        obj["x"] = obj[octx.anchor_x]
+
+
+class DefaultPositionProcessor(BasePositionProcessor):
     """
     The default position processor.
     """
@@ -79,20 +121,24 @@ class DefaultPositionProcessor(Processor):
 
         for line in lines:
             if line.style not in ctx.space_widths:
-                ctx.space_widths[line.style] = line.style.text_extents(line.style, " ")
+                ctx.space_widths[line.style] = line.style.text_extents(" ")["width"]
             ctx.linectx[line] = ProcessingContext()
             ctx.linectx[line].syllables = {}
+
+            lctx = ctx.linectx[line]
+            lctx.anchor = line.anchor
+            lctx.margin = line.margin
+            lctx.style = line.style
 
             for syllable in line.syllables:
                 ctx.linectx[line].syllables[syllable] = ProcessingContext()
 
     def _process(self, lines, ctx):
-
         for line in lines:
             lctx = ctx.linectx[line]
-            lctx.anchor = line.anchor
-            lctx.margin = line.margin
 
+
+            self._calculate_space_correction(line, ctx, lctx)
             self._calculate_top_left(line, ctx, lctx)
             self._calculate_points(line, lctx)
 
@@ -101,6 +147,9 @@ class DefaultPositionProcessor(Processor):
                 sctx = lctx.syllables[syllable]
                 sctx.anchor = line.anchor
                 sctx.margin = line.margin
+                sctx.style = line.style
+                sctx.anchor_x, sctx.anchor_y = lctx.anchor_x, lctx.anchor_y
+                self._calculate_space_correction(syllable, ctx, sctx)
 
                 syllable["top"] = line["top"]
                 syllable["left"] = pos
@@ -109,47 +158,84 @@ class DefaultPositionProcessor(Processor):
 
                 pos += syllable["width"]
 
-    def _calculate_top_left(self, obj, ctx, octx):
 
-        if octx.anchor in (7, 8, 9):
-            obj["top"] = octx.margin[2]
-            octx.anchor_y = "top"
-        elif octx.anchor in (4, 5, 6):
-            obj["top"] = ctx.resolution[1]/2 - obj["height"]/2
-            octx.anchor_y = "middle"
-        elif octx.anchorin (1, 2, 3):
-            obj["top"] = ctx.resolution[1] - obj["height"] - octx.margin[2]
-            octx.anchor_y = "bottom"
+class KanjiPositionProcessor(BasePositionProcessor):
+    """
+    Processor for Kanjis.
+    """
 
-        if octx.anchor in (1, 4, 7):
-            obj["left"] = obj.margin[0]
-            octx.anchor_x = "left"
-        elif octx.anchor in (2, 5, 8):
-            obj["left"] = ctx.resolution[0]/2 - obj["width"]/2
-            octx.anchor_x = "center"
-        elif octx.anchor in (3, 6, 9):
-            obj["left"] = ctx.resolution[0] - obj["width"] - octx.margin[1]
-            octx.anchor_x = "right"
+    def _pre_process(self, lines, ctx):
+        ctx.resolution = get_viewport().resolution
+        ctx.linectx = {}
 
-        space_correction = 0
-        space_correction -= ctx.space_widths[obj.style] * (len(obj) - obj(obj.rstrip()))
-        space_correction += ctx.space_widths[obj.style] * (len(obj) - obj(obj.lstrip()))
+        for line in lines:
+            ctx.linectx[line] = ProcessingContext()
+            ctx.linectx[line].syllables = {}
 
-        octx.space_correction = space_correction
+            lctx = ctx.linectx[line]
+            lctx.anchor = line.anchor
+            lctx.margin = line.margin
+            lctx.style = line.style
 
-        obj["left"] -= space_correction
+            for syllable in line.syllables:
+                ctx.linectx[line].syllables[syllable] = ProcessingContext()
 
-    def _calculate_points(self, obj, octx):
-        obj["middle"] = obj["top"] + obj["height"]/2
-        obj["bottom"] = obj["top"] + obj["height"]
-        obj["x"] = obj[octx.anchor_y]
+    def _process(self, lines, ctx):
+        for line in lines:
+            height = 0
+            max_width = 0
 
-        obj["center"] = obj["left"] + (obj["width"] - octx.space_correction)/2
-        obj["right"] = obj["left"] + (obj["width"] - octx.space_correction)
-        obj["y"] = obj[octx.anchor_x]
+            last_leading = 0
+            for syllable in line.syllables:
+                if "intlead" in syllable:
+                    height += syllable["intlead"]
+
+                height += syllable["height"]
+
+                if "extlead" in syllable:
+                    height += syllable["extlead"]
+                    last_leading = syllable["extlead"]
+
+                max_width = max(max_width, syllable["width"])
+
+            height -= last_leading
+
+            line["height"] = height
+            line["width"] = max_width
+
+            self._calculate_top_left(line, ctx, ctx.linectx[line])
+            self._calculate_points(line, ctx.linectx[line])
+
+            pos = line["top"]
+            for syllable in line.syllables:
+                sctx = lctx.syllables[syllable]
+                sctx.anchor = line.anchor
+                sctx.margin = line.margin
+                sctx.style = line.style
+                sctx.anchor_x, sctx.anchor_y = lctx.anchor_x, lctx.anchor_y
+
+                if "intlead" in syllable:
+                    pos += syllable["intlead"]
+
+                syllable["top"] = pos
+                syllable["left"] = line["left"] + (max_width/2) - (syllable["width"]/2)
+                pos += syllable["height"]
+
+                if "extlead" in syllable:
+                    pos += syllable["extlead"]
+
+                self._calculate_points(syllable, sctx)
 
 
-PositionProcessor = DefaultPositionProcessor
+class PositionProcessor(MultiProcessor):
 
-## class PositionProcessor(MultiProcessor):
-##     pass
+    def __init__(self, kanji_alignments=(1, 4, 7, 3, 6, 9)):
+        MultiProcessor.__init__(self, (DefaultPositionProcessor, KanjiPositionProcessor), None)
+        self.kanji_alignments = kanji_alignments
+
+    def _select(self, processor, line, ctx):
+        return (
+            isinstance(processor, KanjiPositionProcessor) and line.anchor in self.kanji_alignments
+        ) or (
+            isinstance(processor, DefaultPositionProcessor) and line.anchor not in self.kanji_alignments
+        )

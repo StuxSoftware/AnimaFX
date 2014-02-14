@@ -139,3 +139,7 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+#################################################################################################
+# Internal Ignores
+internaltest/
