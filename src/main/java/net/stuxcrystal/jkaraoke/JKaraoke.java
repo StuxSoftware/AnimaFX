@@ -28,7 +28,6 @@ import joptsimple.OptionException;
 import joptsimple.OptionSet;
 import net.stuxcrystal.jass.AssFile;
 import net.stuxcrystal.jass.AssInfoEntry;
-import net.stuxcrystal.jass.AssStyle;
 import net.stuxcrystal.jkaraoke.logging.JKaraokeFormatter;
 import net.stuxcrystal.jkaraoke.logging.LogOutputStream;
 
@@ -44,8 +43,8 @@ import java.util.logging.*;
 public class JKaraoke {
 
     private static final String[] HEADER = {
-            "JKaraoke 0.1-SNAPSHOT",
-            "(c) 2014 StuxCrystal - All rights reserved",
+            "JKaraoke 0.1-Alpha",
+            "(c) 2014 StuxCrystal",
     };
 
     public static void main(String[] args) {
