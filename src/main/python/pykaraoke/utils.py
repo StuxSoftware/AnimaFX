@@ -27,7 +27,10 @@ Utility functions for kara-builder.
 """
 
 def to_ass_time(time):
+    # TODO: Implement the f*** function now.
     """
     Converts the integer-time to a ass-time-value.
+
+    Fuck... Forgot to implement this function...
     """
     pass

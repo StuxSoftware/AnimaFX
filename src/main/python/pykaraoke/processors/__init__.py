@@ -29,12 +29,13 @@ __author__ = 'StuxCrystal'
 
 from base import ProcessingContext, Processor
 from size_processor import SizeProcessor, PositionProcessor
+from size_processor import KanjiPositionProcessor, DefaultPositionProcessor
 from timing_processor import FadeTimingProcessor
 from index_processor import IndexProcessor, CountProcessor, LinkingProcessor
 
 __all__ = [
     "Processor", "ProcessingContext",
-    "SizeProcessor", "PositionProcessor",
+    "SizeProcessor", "PositionProcessor", "KanjiPositionProcessor", "DefaultPositionProcessor"
     "FadeTimingProcessor",
     "process"
 ]
