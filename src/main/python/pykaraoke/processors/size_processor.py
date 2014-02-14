@@ -186,7 +186,13 @@ class KanjiPositionProcessor(BasePositionProcessor):
             max_width = 0
 
             last_leading = 0
+            first = True
             for syllable in line.syllables:
+                if first and len(syllable.text.strip()) == 0:
+                    continue
+                else:
+                    first = False
+
                 if "intlead" in syllable:
                     height += syllable["intlead"]
 
@@ -198,31 +204,46 @@ class KanjiPositionProcessor(BasePositionProcessor):
 
                 max_width = max(max_width, syllable["width"])
 
+                sctx = ctx.linectx[line].syllables[syllable]
+
+
             height -= last_leading
 
             line["height"] = height
             line["width"] = max_width
 
+            ctx.linectx[line].space_correction = 0
+
             self._calculate_top_left(line, ctx, ctx.linectx[line])
             self._calculate_points(line, ctx.linectx[line])
 
             pos = line["top"]
+            first = True
             for syllable in line.syllables:
-                sctx = lctx.syllables[syllable]
+                if first and len(syllable.text.strip()) == 0:
+                    empty = True
+                else:
+                    empty = False
+                    first = False
+
+                sctx = ctx.linectx[line].syllables[syllable]
                 sctx.anchor = line.anchor
                 sctx.margin = line.margin
                 sctx.style = line.style
-                sctx.anchor_x, sctx.anchor_y = lctx.anchor_x, lctx.anchor_y
+                sctx.width = line.style.text_extents(syllable.text.strip())["width"]
+                sctx.space_correction = 0
+                sctx.anchor_x, sctx.anchor_y = ctx.linectx[line].anchor_x, ctx.linectx[line].anchor_y
 
-                if "intlead" in syllable:
+                if "intlead" in syllable and not empty:
                     pos += syllable["intlead"]
 
                 syllable["top"] = pos
-                syllable["left"] = line["left"] + (max_width/2) - (syllable["width"]/2)
-                pos += syllable["height"]
+                syllable["left"] = line["left"] + (max_width/2) - (sctx.width/2)
 
-                if "extlead" in syllable:
-                    pos += syllable["extlead"]
+                if not empty:
+                    pos+= syllable["height"]
+                    if "extlead" in syllable:
+                        pos += syllable["extlead"]
 
                 self._calculate_points(syllable, sctx)
 
@@ -234,8 +255,7 @@ class PositionProcessor(MultiProcessor):
         self.kanji_alignments = kanji_alignments
 
     def _select(self, processor, line, ctx):
-        return (
-            isinstance(processor, KanjiPositionProcessor) and line.anchor in self.kanji_alignments
-        ) or (
-            isinstance(processor, DefaultPositionProcessor) and line.anchor not in self.kanji_alignments
+        return isinstance(
+            processor,
+            (KanjiPositionProcessor if line.anchor in self.kanji_alignments else DefaultPositionProcessor)
         )
