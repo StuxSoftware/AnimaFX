@@ -73,7 +73,7 @@ class DefaultPositionProcessor(Processor):
             self._calculate_points(line, lctx)
 
             pos = line["left"]
-            for syllable in line.syllables:zhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhuj
+            for syllable in line.syllables:
                 sctx = lctx.syllables[syllable]
                 sctx.anchor = line.anchor
                 sctx.margin = line.margin
