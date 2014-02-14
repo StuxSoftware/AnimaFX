@@ -1,4 +1,4 @@
 JKaraoke
 ========
 
-Since, you should be independent.
+Since you should be independent.
