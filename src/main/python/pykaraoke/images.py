@@ -21,7 +21,7 @@ class Image(Document):
     Their width and height however will always be 1. Their start and end-time will
     always be 0.
 
-    Each object will have a color in the RRGGBB form as well as its alpha value and
+    Each object will have a color in the BBGGRR form as well as its alpha value and
     its position.
     """
 
@@ -51,12 +51,37 @@ class Image(Document):
         result = []
         for x, row in enumerate(image):
             for y, pixel in enumerate(row):
+                r, g, b, a = Image._convert_color(pixel)
+
                 result.append(Line(0, 0, self.style, 5, text=PIXEL_SHAPE, extensions={
                     x: x, y: y, width: 1, height: 1,
-                    color: pixel | 0xFF000000,
-                    alpha: pixel & 0xFF000000 >> 24
+                    color: Image._join_bytes((b, g, r)),
+                    alpha: 255 - a
                 }))
         return result
+
+    @staticmethod
+    def _join_bytes(color):
+        """
+        Joins the bytes of a color to a single integer.
+        """
+        result = 0
+        shift = len(color)
+        for i, color in enumerate(color):
+            result |= color&0xff << (shift-i)*8
+        return result
+
+    @staticmethod
+    def _convert_color(color):
+        """
+        Splits the color into its compounds.
+        """
+        blue = encoded & 0xff
+        green = encoded >> 8 & 0xff
+        red = encoded >> 16 & 0xff
+        alpha = encoded >> 24 & 0xff
+
+        return red, green, blue, alpha
 
     def _get_lines(self):
         if self.pixels is None:
