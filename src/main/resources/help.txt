@@ -1,10 +1,10 @@
 java
     [-Djkaraoke.font.scale=64] [-Djkaraoke.screen.dpi=72/96]
-    -jar JKaraoke.jar
+    -jar AnimaFX.jar
     [-?|-h|--help]
     [-d] [-n] [-l <Class>] [-o <File>] [-i <File>] -s <Script>
 
-JKaraoke is a platform independent karaoke effect generator.
+AnimaFX is a platform-independent karaoke effect generator.
 
 Arguments:
 ==============================================================================
@@ -27,7 +27,4 @@ jkaraoke.screen.dpi=79 or 96    The font size in java is given in pt and
                                 converted in pt. Unfortunately the DPI
                                 does affect the conversion factor.
 
-Notes
-==============================================================================
-The logger output is *always* written into the Std-Err. This is done to
-allow other software to use JKaraoke.
+The logger-output of AnimaFX is redirected to the error stream.
