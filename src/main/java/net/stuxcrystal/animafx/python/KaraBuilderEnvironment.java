@@ -131,7 +131,7 @@ public class KaraBuilderEnvironment implements ClassDictInit {
     @ExposedMethod
     public static PyObject get_syllables(PyObject[] args, String[] kwargs) {
         KaraokeToolkit toolkit = KaraokeToolkit.getToolkit();
-        AnimaFX karaoke = toolkit.getJKaraoke();
+        AnimaFX karaoke = toolkit.getAnimaFX();
         PyList list = new PyList();
         for (AssEvent event : karaoke.getInput().getEvents()) {
 
@@ -194,7 +194,7 @@ public class KaraBuilderEnvironment implements ClassDictInit {
         ArgParser parser = new ArgParser("output", args, kwargs, new String[]{"style", "text", "start", "end", "layer"});
 
         KaraokeToolkit toolkit = KaraokeToolkit.getToolkit();
-        AssFile file = toolkit.getJKaraoke().getOutput();
+        AssFile file = toolkit.getAnimaFX().getOutput();
         if (file.getEvents() == null)
             file.setEvents(new ArrayList<AssEvent>());
 
@@ -267,8 +267,8 @@ public class KaraBuilderEnvironment implements ClassDictInit {
     public static PyObject get_styles(PyObject[] args, String[] kwargs) {
         PyDictionary list = new PyDictionary();
 
-        if (KaraokeToolkit.getToolkit().getJKaraoke().getInput().getStyles() != null) {
-            for (AssStyle style : KaraokeToolkit.getToolkit().getJKaraoke().getInput().getStyles()) {
+        if (KaraokeToolkit.getToolkit().getAnimaFX().getInput().getStyles() != null) {
+            for (AssStyle style : KaraokeToolkit.getToolkit().getAnimaFX().getInput().getStyles()) {
                 list.put(new PyString(style.getName()), KaraBuilderEnvironment.to_style(style));
             }
         }
@@ -308,7 +308,7 @@ public class KaraBuilderEnvironment implements ClassDictInit {
      */
     @ExposedMethod
     public static PyObject get_viewport_size(PyObject[] args, String[] kwargs) {
-        Rectangle2D rect = KaraokeToolkit.getToolkit().getJKaraoke().getInputMetaData().getSize();
+        Rectangle2D rect = KaraokeToolkit.getToolkit().getAnimaFX().getInputMetaData().getSize();
         return asTuple(Py.java2py((int) rect.getWidth()), Py.java2py((int) rect.getHeight()));
     }
 

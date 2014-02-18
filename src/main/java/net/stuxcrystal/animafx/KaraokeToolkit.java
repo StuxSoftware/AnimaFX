@@ -161,7 +161,7 @@ public class KaraokeToolkit {
      * Returns the instance of AnimaFX.
      * @return The instance of AnimaFX.
      */
-    public AnimaFX getJKaraoke() {
+    public AnimaFX getAnimaFX() {
         return this.base;
     }
 
