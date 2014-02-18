@@ -23,8 +23,9 @@ animafx.font.scale=64          How the font is scaled while calculated the
                                boundary of the text.
 
 animafx.screen.dpi=79 or 96    The font size in java is given in pt and
-                                thus the font size in the ASS-File has to be
-                                converted in pt. Unfortunately the DPI
-                                does affect the conversion factor.
+                               thus the font size in the ASS-File has to be
+                               converted in pt. Unfortunately the DPI
+                               does affect the conversion factor.
+                               The actual default value depends on the OS.
 
 The logger-output of AnimaFX is redirected to the error stream.
