@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 /**
  * Detects the current operating system.

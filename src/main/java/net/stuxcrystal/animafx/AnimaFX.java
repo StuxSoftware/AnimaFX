@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import joptsimple.OptionException;
 import joptsimple.OptionSet;
 import net.stuxcrystal.jass.AssFile;
 import net.stuxcrystal.jass.AssInfoEntry;
-import net.stuxcrystal.jkaraoke.logging.JKaraokeFormatter;
-import net.stuxcrystal.jkaraoke.logging.LogOutputStream;
+import net.stuxcrystal.animafx.logging.JKaraokeFormatter;
+import net.stuxcrystal.animafx.logging.LogOutputStream;
 
 import java.awt.Toolkit;
 import java.awt.GraphicsEnvironment;
@@ -40,10 +40,10 @@ import java.util.logging.*;
 /**
  * Test text.
  */
-public class JKaraoke {
+public class AnimaFX {
 
     private static final String[] HEADER = {
-            "JKaraoke 0.1-Alpha.1",
+            "AnimaFX 0.1-Alpha.2",
             "(c) 2014 StuxCrystal",
     };
 
@@ -52,9 +52,9 @@ public class JKaraoke {
         for (String line : HEADER)
             System.err.println(line);
 
-        JKaraoke jkaraoke;
+        AnimaFX animafx;
         try {
-            jkaraoke = new JKaraoke(args);
+            animafx = new AnimaFX(args);
         } catch (OptionException e) {
             System.err.println();
             System.err.println(e.getMessage());
@@ -64,10 +64,10 @@ public class JKaraoke {
             return;
         }
 
-        if (!jkaraoke.initialize())
+        if (!animafx.initialize())
             return;
 
-        jkaraoke.run();
+        animafx.run();
     }
 
     /**
@@ -86,7 +86,7 @@ public class JKaraoke {
     private Logger logger;
 
     /**
-     * Arguments passed to JKaraoke.
+     * Arguments passed to AnimaFX.
      */
     private OptionSet options;
 
@@ -96,7 +96,7 @@ public class JKaraoke {
     private AssFile input;
 
     /**
-     * Contains the output of JKaraoke.
+     * Contains the output of AnimaFX.
      */
     private AssFile output;
 
@@ -106,14 +106,14 @@ public class JKaraoke {
     private AssDocument inputData;
 
     /**
-     * Creates a new instance of JKaraoke.
+     * Creates a new instance of AnimaFX.
      */
-    private JKaraoke(String[] arguments) {
+    private AnimaFX(String[] arguments) {
         this.options = ProgramOptions.parseOptions(arguments);
     }
 
     /**
-     * Initializes JKaraoke.
+     * Initializes AnimaFX.
      */
     private boolean initialize() {
         if (options.has("?")) {
@@ -126,7 +126,7 @@ public class JKaraoke {
         }
 
         // Create a new logger.
-        this.logger = Logger.getLogger("JKaraoke");
+        this.logger = Logger.getLogger("AnimaFX");
         this.logger.setUseParentHandlers(false);
         Handler handler = new ConsoleHandler();
         handler.setFormatter(new JKaraokeFormatter());
@@ -138,8 +138,8 @@ public class JKaraoke {
         System.setErr(new PrintStream(new LogOutputStream(outputLogger, Level.WARNING), true));
         System.setOut(new PrintStream(new LogOutputStream(outputLogger, Level.INFO), true));
 
-        this.logger.info("Initializing JKaraoke...");
-        this.logger.info("JKaraoke currently runs on " + OperatingSystem.CURRENT_OPERATING_SYSTEM.toString());
+        this.logger.info("Initializing AnimaFX...");
+        this.logger.info("AnimaFX currently runs on " + OperatingSystem.CURRENT_OPERATING_SYSTEM.toString());
 
         // Set debug mode.
         if (this.isDebug()) {
@@ -250,7 +250,7 @@ public class JKaraoke {
 
         StringWriter writer = new StringWriter();
         this.output.setInfoEntries(new ArrayList<>(this.input.getInfoEntries()));
-        this.output.getInfoEntries().add(new AssInfoEntry("Header", "Created by JKaraoke."));
+        this.output.getInfoEntries().add(new AssInfoEntry("Header", "Created by AnimaFX."));
         try {
             this.output.dump(writer);
         } catch (IOException e) {
@@ -295,24 +295,24 @@ public class JKaraoke {
     }
 
     /**
-     * Returns the logger of JKaraoke.
-     * @return The logger of JKaraoke.
+     * Returns the logger of AnimaFX.
+     * @return The logger of AnimaFX.
      */
     public Logger getLogger() {
         return this.logger;
     }
 
     /**
-     * Returns the input file of JKaraoke.
-     * @return The input file of JKaraoke.
+     * Returns the input file of AnimaFX.
+     * @return The input file of AnimaFX.
      */
     public AssFile getInput() {
         return input;
     }
 
     /**
-     * Returns the output file of JKaraoke.
-     * @return The output file of JKaraoke.
+     * Returns the output file of AnimaFX.
+     * @return The output file of AnimaFX.
      */
     public AssFile getOutput() {
         return output;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +38,6 @@ public interface LanguageHandler {
      * This method is called once.
      * @param file The script file.
      */
-    public void generate(JKaraoke karaoke, File file) throws IOException;
+    public void generate(AnimaFX karaoke, File file) throws IOException;
 
 }

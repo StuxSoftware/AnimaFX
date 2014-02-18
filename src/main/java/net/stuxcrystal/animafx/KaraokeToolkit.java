@@ -22,18 +22,15 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import net.stuxcrystal.jass.AssStyle;
-import net.stuxcrystal.jkaraoke.structures.TextExtents;
+import net.stuxcrystal.animafx.structures.TextExtents;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
-import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Creates a new toolkit for karaoke objects.
@@ -43,7 +40,7 @@ public class KaraokeToolkit {
     /**
      * The scaling on the font-size for TextExtents.
      */
-    private static final int FONT_SIZE_SCALE = Integer.valueOf(System.getProperty("jkaraoke.font.scale", "1"));
+    private static final int FONT_SIZE_SCALE = Integer.valueOf(System.getProperty("animafx.font.scale", "1"));
 
     /**
      * The DPI of the screen.<p />
@@ -58,9 +55,9 @@ public class KaraokeToolkit {
     private static KaraokeToolkit INSTANCE;
 
     /**
-     * The base-class of JKaraoke.
+     * The base-class of AnimaFX.
      */
-    private final JKaraoke base;
+    private final AnimaFX base;
 
     /**
      * The context for the font renderer.
@@ -69,9 +66,9 @@ public class KaraokeToolkit {
 
     /**
      * Creates a new instance of the Toolkit.
-     * @param base The instance of JKaraoke.
+     * @param base The instance of AnimaFX.
      */
-    KaraokeToolkit(JKaraoke base) {
+    KaraokeToolkit(AnimaFX base) {
         if (KaraokeToolkit.INSTANCE != null)
             throw new IllegalStateException("There is already a toolkit instance.");
 
@@ -161,10 +158,10 @@ public class KaraokeToolkit {
     }
 
     /**
-     * Returns the instance of JKaraoke.
-     * @return The instance of JKaraoke.
+     * Returns the instance of AnimaFX.
+     * @return The instance of AnimaFX.
      */
-    public JKaraoke getJKaraoke() {
+    public AnimaFX getJKaraoke() {
         return this.base;
     }
 
@@ -181,12 +178,27 @@ public class KaraokeToolkit {
      * @return The dpi of the screen.
      */
     private static float getScreenDPI() {
-        if (SCREEN_DPI == -1) {
-            String defaultDPI = "72";
-            if (OperatingSystem.CURRENT_OPERATING_SYSTEM == OperatingSystem.WINDOWS)
-                defaultDPI = "96";
+        if (SCREEN_DPI != -1) {
+            return SCREEN_DPI;
+        }
 
-            SCREEN_DPI = Integer.valueOf(System.getProperty("jkaraoke.screen.dpi", defaultDPI));
+        if (System.getProperties().containsKey("animafx.screen.dpi")) {
+            SCREEN_DPI = Integer.valueOf("animagx.screen.dpi");
+        } else {
+            switch (OperatingSystem.CURRENT_OPERATING_SYSTEM) {
+                case WINDOWS:
+                case LINUX:
+                    SCREEN_DPI = 96;
+                    break;
+
+                case MAC:
+                    SCREEN_DPI = 72;
+                    break;
+
+                default:
+                    SCREEN_DPI = 72;
+                    break;
+            }
         }
         return SCREEN_DPI;
     }

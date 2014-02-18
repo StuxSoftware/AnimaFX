@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import net.stuxcrystal.jass.AssFile;
 import net.stuxcrystal.jass.AssFileEntry;
 import net.stuxcrystal.jass.AssFileEntryUtils;
-import org.python.modules.itertools.itertools;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,14 +50,14 @@ public class Cache {
     private Map<String, BufferedImage> images = new HashMap<>();
 
     /**
-     * Reference to JKaraoke.
+     * Reference to AnimaFX.
      */
-    private final JKaraoke karaoke;
+    private final AnimaFX karaoke;
 
     /**
      * Creates a new cache for objects inside an ASS-File.
      */
-    public Cache(JKaraoke karaoke) {
+    public Cache(AnimaFX karaoke) {
         this.karaoke = karaoke;
     }
 

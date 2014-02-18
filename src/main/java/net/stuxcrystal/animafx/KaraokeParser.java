@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import net.stuxcrystal.jass.AssEvent;
 import net.stuxcrystal.jass.overrides.AssOverrideDefaultTagList;
 import net.stuxcrystal.jass.overrides.AssOverrideParser;
 import net.stuxcrystal.jass.overrides.AssOverrideTag;
 import net.stuxcrystal.jass.types.text.AssLinePart;
-import net.stuxcrystal.jkaraoke.structures.Syllable;
+import net.stuxcrystal.animafx.structures.Syllable;
 
 import java.util.ArrayList;
 import java.util.List;

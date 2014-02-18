@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke.python;
+package net.stuxcrystal.animafx.python;
 
 import net.stuxcrystal.jass.AssEvent;
 import net.stuxcrystal.jass.AssEventType;
 import net.stuxcrystal.jass.AssFile;
 import net.stuxcrystal.jass.AssStyle;
 import net.stuxcrystal.jass.types.AssTime;
-import net.stuxcrystal.jkaraoke.JKaraoke;
-import net.stuxcrystal.jkaraoke.KaraokeToolkit;
-import net.stuxcrystal.jkaraoke.structures.Syllable;
-import net.stuxcrystal.jkaraoke.structures.TextExtents;
+import net.stuxcrystal.animafx.AnimaFX;
+import net.stuxcrystal.animafx.KaraokeToolkit;
+import net.stuxcrystal.animafx.structures.Syllable;
+import net.stuxcrystal.animafx.structures.TextExtents;
 import org.python.core.*;
 import org.python.expose.ExposedMethod;
 
@@ -52,7 +52,7 @@ public class KaraBuilderEnvironment implements ClassDictInit {
      */
     public static void classDictInit(PyObject dict) {
         dict.__setitem__("__doc__", new PyString("The environment for KaraBuilder."));
-        dict.__setitem__("name", new PyString("JKaraoke"));
+        dict.__setitem__("name", new PyString("AnimaFX"));
         dict.__setitem__("support", asTuple(new PyString("styles"), new PyString("output"), new PyString("images")));
         dict.__setitem__("attributes", asTuple(/*new PyString("no_edge_spaces")*/));
     }
@@ -131,7 +131,7 @@ public class KaraBuilderEnvironment implements ClassDictInit {
     @ExposedMethod
     public static PyObject get_syllables(PyObject[] args, String[] kwargs) {
         KaraokeToolkit toolkit = KaraokeToolkit.getToolkit();
-        JKaraoke karaoke = toolkit.getJKaraoke();
+        AnimaFX karaoke = toolkit.getJKaraoke();
         PyList list = new PyList();
         for (AssEvent event : karaoke.getInput().getEvents()) {
 

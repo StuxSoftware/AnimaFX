@@ -10,10 +10,6 @@ __all__ = ["Vector"]
 
 
 class Vector(tuple):
-
-    # A null-vector.
-    NullVector = Vector(0, 0, 0)
-
     # This is an immutable object, thus there are no
     # objects.
     __slots__ = []

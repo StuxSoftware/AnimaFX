@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.ValueConversionException;
 import joptsimple.ValueConverter;
-import net.stuxcrystal.jass.AssFileEntryUtils;
 
 import java.io.*;
 
@@ -100,7 +99,7 @@ public class ProgramOptions {
         acceptsAll(asList("l", "language-handler"), "The handler for the file.")
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("net.stuxcrystal.jkaraoke.python.PythonLanguage")
+                .defaultsTo("net.stuxcrystal.animafx.python.PythonLanguage")
                 .describedAs("Class");
 
         acceptsAll(asList("s", "script"), "The script to execute")

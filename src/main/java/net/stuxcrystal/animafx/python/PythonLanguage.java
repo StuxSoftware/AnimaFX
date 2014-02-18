@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke.python;
+package net.stuxcrystal.animafx.python;
 
-import net.stuxcrystal.jkaraoke.JKaraoke;
-import net.stuxcrystal.jkaraoke.LanguageHandler;
-import net.stuxcrystal.jkaraoke.logging.LogOutputStream;
-import net.stuxcrystal.jkaraoke.structures.Syllable;
-import org.python.core.Py;
-import org.python.core.PyModule;
+import net.stuxcrystal.animafx.AnimaFX;
+import net.stuxcrystal.animafx.LanguageHandler;
+import net.stuxcrystal.animafx.logging.LogOutputStream;
 import org.python.util.PythonInterpreter;
 
 import java.io.File;
@@ -42,7 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implementing the Python-Language into JKaraoke.
+ * Implementing the Python-Language into AnimaFX.
  */
 public class PythonLanguage implements LanguageHandler {
 
@@ -63,7 +60,7 @@ public class PythonLanguage implements LanguageHandler {
      * @param file The script file.
      */
     @Override
-    public void generate(JKaraoke karaoke, File file) throws IOException {
+    public void generate(AnimaFX karaoke, File file) throws IOException {
         // Initialize the python interpreter.
         this.initialize();
 

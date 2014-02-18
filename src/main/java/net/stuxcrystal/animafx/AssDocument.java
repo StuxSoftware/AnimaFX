@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke;
+package net.stuxcrystal.animafx;
 
 import net.stuxcrystal.jass.AssFile;
 import net.stuxcrystal.jass.AssInfoEntry;
@@ -40,9 +40,9 @@ public class AssDocument {
     private final AssFile file;
 
     /**
-     * Instance to JKaraoke.
+     * Instance to AnimaFX.
      */
-    private final JKaraoke karaoke;
+    private final AnimaFX karaoke;
 
     /**
      * The resolution of the document.
@@ -52,9 +52,9 @@ public class AssDocument {
     /**
      * This is the file.
      * @param file    The file containing the data
-     * @param karaoke The reference to JKaraoke.
+     * @param karaoke The reference to AnimaFX.
      */
-    public AssDocument(JKaraoke karaoke, AssFile file) {
+    public AssDocument(AnimaFX karaoke, AssFile file) {
         this.karaoke = karaoke;
         this.file = file;
     }

@@ -79,7 +79,7 @@
 
                     <archive>
                         <manifest>
-                            <mainClass>net.stuxcrystal.jkaraoke.JKaraoke</mainClass>
+                            <mainClass>net.stuxcrystal.animafx.AnimaFX</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

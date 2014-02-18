@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke.structures;
+package net.stuxcrystal.animafx.structures;
 
 /**
  * Represents a syllable.

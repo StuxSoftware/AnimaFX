@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.stuxcrystal.jkaraoke.logging;
+package net.stuxcrystal.animafx.logging;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
