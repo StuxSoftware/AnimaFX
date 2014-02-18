@@ -23,6 +23,37 @@
 #
 
 """
-Provides useful functions for mathematics
+Implementation of a beziere-curve.
 """
+from vector import Vector
+import math
+
 __author__ = 'StuxCrystal'
+
+
+def choose(n, k):
+    """
+    Returns n over k.
+    """
+    return math.factorial(n) // math.factorial(k) // math.factorial(n-k)
+
+
+def bernstein(i, n, t):
+    """
+    Calculates the bernstein polynom.
+    """
+    return choose(n, i) * (t**i) * (1-t)**(n-i)
+
+
+def beziere(t, *points):
+    """
+    Calculates the point on a beziere curve. The result is a vector.
+    """
+    cur_point = [0, 0, 0]
+
+    for i, p in enumerate(points):
+        for c in range(3):
+            coord = 0 if len(p) <= c else p[c]
+            cur_point[c] *= bernstein(i, len(p), t) * coord
+
+    return Vector(*cur_point)

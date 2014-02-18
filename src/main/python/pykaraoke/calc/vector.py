@@ -1,3 +1,27 @@
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2014 StuxCrystal
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
 """
 Implementation of vectors.
 """
@@ -10,6 +34,43 @@ __all__ = ["Vector"]
 
 
 class Vector(tuple):
+    """
+    This class represents a three-dimensional vector.
+
+    >>> Vector(1, 2, 3)
+    <Vector x:1.000000  y:2.000000 z:3.000000>
+    >>> Vector(1, 2)                              # The z-Argument is optional.
+    <Vector x:1.000000  y:2.000000 z:0.000000>
+
+    You can add, substract two vectors
+    >>> Vector(1,2,3) + Vector(2,3,4)
+    >>> Vector(5,5,6) - Vector(8,9,5)
+
+    You can multiply and divide a vector with a scalar.
+    >>> Vector(4,5,6) * 7
+    >>> Vector(4,5,6) / 8
+
+    You can negate (or make positive) and a vector
+    >>> -Vector(4,5,9)
+    >>> +Vector(4,5,6)
+
+    You can calculate the distance relative to the origin
+    >>> abs(Vector(4,5,6))
+
+    You can check if the vector is a null-vector or check if two vectors equals each other
+    >>> True if Vector(0,0,0) else False
+    >>> Vector(1,2,3) == Vector(4,5,6)
+    >>> Vector(7,8,9) != Vector(7,5,4)
+
+    You can query and unpack each of its components.
+    >>> Vector(1,2,3)[0] == Vector(1,2,3).x
+    >>> Vector(1,2,3)[1] == Vector(1,2,3).y
+    >>> Vector(1,2,3)[2] == Vector(1,2,3).z
+    >>> x, y, z = Vector(1,2,3)
+
+    Note that this class is immutable.
+    """
+
     # This is an immutable object, thus there are no
     # objects.
     __slots__ = []
