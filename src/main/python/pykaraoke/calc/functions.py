@@ -25,10 +25,11 @@
 """
 Implementation of a beziere-curve.
 """
-from vector import Vector
+from graphics import Vector
 import math
 
 __author__ = 'StuxCrystal'
+__all__ = ["choose", "bernstein", "beziere"]
 
 
 def choose(n, k):
@@ -52,8 +53,9 @@ def beziere(t, *points):
     cur_point = [0, 0, 0]
 
     for i, p in enumerate(points):
+        bern = bernstein(i, len(points), t)
         for c in range(3):
             coord = 0 if len(p) <= c else p[c]
-            cur_point[c] *= bernstein(i, len(p), t) * coord
+            cur_point[c] += bern * coord
 
     return Vector(*cur_point)

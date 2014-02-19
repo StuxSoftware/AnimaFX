@@ -26,3 +26,6 @@
 Provides useful functions for mathematics
 """
 __author__ = 'StuxCrystal'
+
+from functions import beziere
+from graphics import Vector

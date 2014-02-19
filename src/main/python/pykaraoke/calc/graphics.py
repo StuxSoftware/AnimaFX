@@ -25,7 +25,7 @@
 """
 Implementation of vectors.
 """
-__author__ = 'Stux'
+__author__ = 'StuxCrystal'
 
 import operator
 import math
@@ -50,6 +50,9 @@ class Vector(tuple):
     >>> Vector(4,5,6) * 7
     >>> Vector(4,5,6) / 8
 
+    You can calculate the dot-product by multiplying multiple vectors
+    >>> Vector(1,2,3) * Vector(4,5,6)
+
     You can negate (or make positive) and a vector
     >>> -Vector(4,5,9)
     >>> +Vector(4,5,6)
@@ -67,6 +70,10 @@ class Vector(tuple):
     >>> Vector(1,2,3)[1] == Vector(1,2,3).y
     >>> Vector(1,2,3)[2] == Vector(1,2,3).z
     >>> x, y, z = Vector(1,2,3)
+
+    You can normalize the vector
+    >>> Vector(5,2,0).normalize()
+
 
     Note that this class is immutable.
     """
@@ -136,8 +143,17 @@ class Vector(tuple):
     def __mul__(self, other):
         """
         Multiplies a vector with a scalar.
+        Will calculate the dot-product if you pass another vector to it.
         """
+        if isinstance(other, Vector):
+            return self._m_dot(other)
+        return self._m_scalar(other)
+
+    def _m_scalar(self, other):
         return Vector(self.x*other, self.y*other, self.z*other)
+
+    def _m_dot(self, other):
+        return self.x*other.x + self.y*other.y + self.z*other.z
 
     def __div__(self, other):
         """
@@ -165,6 +181,12 @@ class Vector(tuple):
     @property
     def length_squared(self):
         return self.x**2 + self.y**2 + self.z**2
+
+    def get_angle(self, vector):
+        """
+        Returns the angle between two vectors (in radians).
+        """
+        return math.acos((self*vector) / abs(self) / abs(vector))
 
     # Representation
     def __repr__(self):
