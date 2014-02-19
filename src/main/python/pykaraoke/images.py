@@ -72,7 +72,7 @@ class Image(Document):
         result = 0
         shift = len(color)
         for i, color in enumerate(color):
-            result |= color&0xff << (shift-i)*8
+            result |= color & 0xff << (shift-i)*8
         return result
 
     @staticmethod
