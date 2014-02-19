@@ -54,9 +54,9 @@ class Image(Document):
                 r, g, b, a = Image._convert_color(pixel)
 
                 result.append(Line(0, 0, self.style, 5, text=PIXEL_SHAPE, extensions={
-                    x: x, y: y, width: 1, height: 1,
-                    color: Image._join_bytes((b, g, r)),
-                    alpha: 255 - a
+                    "x": x, "y": y, "width": 1, "height": 1,
+                    "color": Image._join_bytes((b, g, r)),
+                    "alpha": 255 - a
                 }))
         return result
 
@@ -76,10 +76,10 @@ class Image(Document):
         """
         Splits the color into its compounds.
         """
-        blue = encoded & 0xff
-        green = encoded >> 8 & 0xff
-        red = encoded >> 16 & 0xff
-        alpha = encoded >> 24 & 0xff
+        blue = color & 0xff
+        green = color >> 8 & 0xff
+        red = color >> 16 & 0xff
+        alpha = color >> 24 & 0xff
 
         return red, green, blue, alpha
 
