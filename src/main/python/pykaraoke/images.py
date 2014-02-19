@@ -43,6 +43,10 @@ class Image(Document):
         Returns all pixels of the file or an
         empty array if the file could not be retrieved.
         """
+        # Return an empty array if images are not supported.
+        if not self.supports_line_reading:
+            return []
+
         image = get_environment().get_image(self.name)
         if image is None:
             # Empty array.
