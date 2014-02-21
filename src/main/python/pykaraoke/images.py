@@ -1,6 +1,7 @@
 """
 Class to support images.
 """
+from calc.graphics import AffineTransform, Vector
 from environment import get_environment
 from types import Line
 from document import Document
@@ -10,7 +11,7 @@ __author__ = 'StuxCrystal'
 #
 # This is a simple shape to support pixels.
 #
-PIXEL_SHAPE = "m 0 0 l 0 1 1 1 1 0"
+PIXEL_SHAPE = "{\\p1}m 0 0 l 0 1 1 1 1 0{\\p0}"
 
 
 class Image(Document):
@@ -63,6 +64,20 @@ class Image(Document):
                     "alpha": 255 - a
                 }))
         return result
+
+    def tansform(self, transform=AffineTransform.move(0, 0)):
+        """
+        Transforms all pixels in the image.
+        """
+        if not isinstance(transform, AffineTransform):
+            raise ValueError("The parameter 1 has to be an affine transformation.")
+
+        def _transform(line):
+            vp = Vector(float(line["x"]), float(line["y"]))
+            vp = transform*vp
+            line["x"], line["y"] = vp.x, vp.y
+
+        return self.annotate(_transform)
 
     @staticmethod
     def _join_bytes(color):
