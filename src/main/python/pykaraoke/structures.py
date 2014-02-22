@@ -25,6 +25,7 @@
 """
 Returns common types of karabuilder.
 """
+from utils import to_ass_time
 from styles import StyleManager, Style
 from environment import get_environment
 
@@ -161,7 +162,10 @@ class Line(ExtensibleObject):
         get_environment().write_line(self)
 
     def copy(self):
-        result = Line(self.start, self.end, self.style.copy(), self.margin, self.anchor, self.layer)
+        result = Line(
+            self.start, self.end, self.style.copy(), self.anchor, self.margin, self.layer,
+            extensions=self.extension.copy()
+        )
         result.syllables = [syllable.copy() for syllable in self.syllables]
         result.raw_text = self.raw_text
         return result
@@ -185,9 +189,9 @@ class Line(ExtensibleObject):
         self.raw_text = value
 
     def __repr__(self):
-        return "<Line start:%d end:%d style:%r margin:%r anchor:%d %s extensions:%r layer:%i>" % (
-            self.start, self.end, self.style, self.margin, self.anchor,
-            ("syllables:%r" % self.syllables if self.raw_text is None else "text:'%s'" % self.raw_text),
+        return "<Line start:%s end:%s style:%r margin:%s anchor:%d %s extensions:%r layer:%i>" % (
+            to_ass_time(self.start), to_ass_time(self.end), self.style, repr(self.margin), self.anchor,
+            (("syllables:%s" % repr(self.syllables)) if self.raw_text is None else ("text:'%s'" % self.raw_text)),
             self.extension, self.layer
         )
 

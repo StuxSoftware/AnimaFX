@@ -88,7 +88,7 @@ def retime(transformer):
         line.start, line.end = new_start, new_end
     return _set
 
-def frame4frame(fps=None, preferVideo=True):
+def frame4frame(fps=None, prefer_video=True):
     """
     Makes a frame4frame-sub out of the video.
     Does nothing if the fps couldn't be queried.
@@ -97,20 +97,33 @@ def frame4frame(fps=None, preferVideo=True):
     if fps is None and not environment.video_info_supported:
         return lambda line: [line]
 
-    if fps is None or preferVideo:
+    if prefer_video and environment.video_info_supported:
         fps = environment.get_fps()
 
+    duration = 1000.0/fps
+
     def _refactor(line):
-        cStart, count = line.start, math.ceil((line.end - line.start) / fps)
         result = []
-        for i in range(count):
-            cLine = line.copy()
-            cLine.start = cStart
-            cLine.end = min(cStart + 1/fps, line.end)
-            cStart += 1/fps
-            result["line"] = line
-            result["index"] = i
-            result["count"] = count
-            result.append(result)
+        cur_time = line.start
+        index = 0
+
+        while cur_time <= line.end:
+            cur_line = line.copy()
+            cur_line.extension = {}
+            cur_line.start = max(line.start, int(math.floor(cur_time)))
+            cur_time += duration
+            cur_line.end = min(int(math.ceil(cur_time)), line.end)
+
+            cur_line["original"] = line
+            cur_line["index"] = index
+
+            result.append(cur_line)
+
+            index += 1
+
+        line_count = len(result)
+        for l in result:
+            l["count"] = line_count
+
         return result
     return _refactor

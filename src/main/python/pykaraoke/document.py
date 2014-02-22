@@ -26,7 +26,7 @@
 Represents the input and the output document.
 """
 from styles import StyleManager
-from operations import set_text, set_value, set_extension, retime, filter_lines
+from operations import set_text, set_value, set_extension, retime, filter_lines, frame4frame
 from processors import process as process_lines
 from environment import get_environment
 from structures import Line
@@ -60,14 +60,14 @@ class Document(object):
         """
         raise NotImplementedError
 
-    def add_lines(self, *lines):
+    def add_lines(self, lines):
         """
-        Adds all lines...
+        Adds multiple lines.
         """
         for line in lines:
-            self._add_line(line)
+            self.add_line(line)
 
-    def _add_line(self, line):
+    def add_line(self, line):
         """
         Adds a line to the document.
         """
@@ -156,7 +156,13 @@ class Document(object):
         """
         Filters a line.
         """
-        return self.filter(filter_lines(func))
+        return self.refactor(filter_lines(func))
+
+    def frames(self, fps=None, prefer_video=False):
+        """
+        Creates a frame for frame sub.
+        """
+        return self.refactor(frame4frame(fps, prefer_video))
 
     def syllables(self):
         """
@@ -164,7 +170,9 @@ class Document(object):
         """
         return self.refactor(lambda line: [
             Line(
-                syllable.start, syllable.end, line.style, line.anchor, extensions={"syllable": syllable, "line": line},
+                syllable.start, syllable.end, line.style,
+                margin=line.margin, anchor=line.anchor,
+                extensions={"syllable": syllable, "line": line},
                 text=syllable.text
             )
             for syllable in line.syllables
@@ -182,7 +190,7 @@ class Document(object):
         if not document.supports_line_writing:
             raise ValueError("The document does not support writing")
 
-        document.add_lines(*self.get_lines())
+        document.add_lines(self.get_lines())
         return document
 
     def stream_from(self, document):
@@ -233,8 +241,11 @@ class Document(object):
         Iterates over all lines
         """
         if not self._support_line_reading():
-            return []
-        return self.get_lines()
+            result = []
+        else:
+            result = self.get_lines()
+
+        return iter(result)
 
 
 class LineBuffer(Document):
@@ -257,7 +268,7 @@ class LineBuffer(Document):
     def _get_lines(self):
         return self.lines
 
-    def _add_line(self, line):
+    def add_line(self, line):
         self.lines.append(line)
 
     def clear(self):
@@ -340,5 +351,5 @@ class OutputDocument(EnvironmentDocument):
         """
         return True
 
-    def _add_line(self, line):
+    def add_line(self, line):
         self.environment.write_line(line)

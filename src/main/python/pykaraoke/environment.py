@@ -186,7 +186,7 @@ class Environment(object):
         """
         Can you query meta-data about the video.
         """
-        return "vinfo" in self.styles_supported
+        return "vinfo" in self.support
 
 
 class EmbeddedEnvironment(Environment):
