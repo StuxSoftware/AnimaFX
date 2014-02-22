@@ -54,7 +54,9 @@ class ProcessingContext(object):
         return item in object.__getattribute__(self, "data")
 
     def __repr__(self):
-        return "<PreprocessingContext " + ", ".join(["%s:%r"%(key, value) for key, value in object.__getattribute__(self, "data").items()]) + ">"
+        return "<PreprocessingContext " + ", ".join(
+            ["%s:%r" % (key, value) for key, value in object.__getattribute__(self, "data").items()]
+        ) + ">"
 
 
 class Processor(object):
@@ -134,6 +136,7 @@ class MultiProcessor(Processor):
             pctx = ProcessingContext()
             processor._pre_process(processor_lines, pctx)
             ctx.contexts[processor] = (processor_lines, pctx)
+
     def _process(self, lines, ctx):
         for processor in self.processors:
             processor._process(*ctx.contexts[processor])

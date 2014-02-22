@@ -104,6 +104,6 @@ def frame4frame(fps=None, preferVideo=True):
             result["line"] = line
             result["index"] = i
             result["count"] = count
-            result.add(result)
+            result.append(result)
         return result
     return _refactor

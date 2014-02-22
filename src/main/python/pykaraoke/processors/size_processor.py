@@ -137,7 +137,6 @@ class DefaultPositionProcessor(BasePositionProcessor):
         for line in lines:
             lctx = ctx.linectx[line]
 
-
             self._calculate_space_correction(line, ctx, lctx)
             self._calculate_top_left(line, ctx, lctx)
             self._calculate_points(line, lctx)

@@ -64,13 +64,13 @@ class LinkingProcessor(Processor):
     """
 
     def _process(self, lines, ctx):
-        lastLine = None
+        last_line = None
         for line in lines:
             # Link the lines together.
-            line["previous"] = lastLine
-            if lastLine is not None:
-                lastLine["next"] = line
-            lastLine = line
+            line["previous"] = last_line
+            if last_line is not None:
+                last_line["next"] = line
+            last_line = line
 
             # Do the same for each syllable.
             lastSyllable = None
@@ -84,5 +84,5 @@ class LinkingProcessor(Processor):
                 lastSyllable["next"] = None
 
         # Set the next-value explicitly for the last line.
-        if lastLine is not None:
-            lastLine["next"] = None
+        if last_line is not None:
+            last_line["next"] = None

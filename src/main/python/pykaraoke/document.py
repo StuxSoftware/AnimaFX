@@ -180,10 +180,6 @@ class Document(object):
         return document
 
     def stream_from(self, document):
-        """
-        Short for
-        >>> document.stream_to(self)
-        """
         document.stream_to(self)
         return self
 
@@ -240,8 +236,11 @@ class LineBuffer(Document):
     A buffer for lines.
     """
 
-    def __init__(self, lines=[]):
-        self.lines = lines
+    def __init__(self, lines=None):
+        if lines is not None:
+            self.lines = lines
+        else:
+            self.lines = []
 
     def _support_line_writing(self):
         return True

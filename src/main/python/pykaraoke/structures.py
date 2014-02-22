@@ -32,6 +32,7 @@ __author__ = 'StuxCrystal'
 
 __all__ = ["Style", "Line", "Syllable", "Viewport"]
 
+
 class Viewport(object):
     """
     Viewports.
