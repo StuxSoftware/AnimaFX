@@ -26,6 +26,25 @@ from environment import get_environment
 
 __author__ = 'StuxCrystal'
 
+class _cache(object):
+    """
+    Caches the function.
+    """
+
+    def __init__(self, func):
+        self.called = False
+        self.result = None
+        self.func = func
+
+        self.__doc__ = self.func.__doc__
+
+    def __call__(self, *args, **kwargs):
+        if self.called:
+            return self.result
+        self.called = True
+        self.result = self.func(*args, **kwargs)
+        return self.result
+
 
 class StyleManager(object):
     """
@@ -33,6 +52,9 @@ class StyleManager(object):
     Generate the apropriate style manager using
     >>> StyleManager.resolve()
     """
+
+    # Contains the current style manager.
+    manager = None
 
     def _get_style(self, name):
         """
@@ -61,7 +83,8 @@ class StyleManager(object):
     __iter__ = get_styles
 
     @staticmethod
-    def resolve():
+    @_cache
+    def _resolve():
         """
         Returns the style manager for this environment.
         """
@@ -79,7 +102,6 @@ class StyleManager(object):
             return EnvironmentStyleManager()
         else:
             return CachedStyleManager()
-
 
 class EnvironmentStyleManager(StyleManager):
     """
