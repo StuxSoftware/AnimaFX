@@ -63,6 +63,13 @@ def set_extension(transformer):
         line[name] = result
     return _set
 
+def filter_lines(filter_func):
+    """
+    Filters all lines using filter_func(line):bool.
+    """
+    def _refactor(line):
+        return [line] if filter_func(line) else []
+    return _refactor
 
 def retime(transformer):
     """

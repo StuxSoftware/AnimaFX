@@ -26,7 +26,7 @@
 Represents the input and the output document.
 """
 from styles import StyleManager
-from operations import set_text, set_value, set_extension, retime
+from operations import set_text, set_value, set_extension, retime, filter_lines
 from processors import process as process_lines
 from environment import get_environment
 from structures import Line
@@ -136,7 +136,7 @@ class Document(object):
 
     def refactor(self, func):
         """
-        Refactors each line. e.g makes multiple lines using it.
+        Refactors each line. e.g makes multiple lines.
         Will create a buffer that will be returned.
 
         The line passed to the function is a copy of the underlying line.
@@ -151,6 +151,12 @@ class Document(object):
                 result.extend(refactor_result)
 
         return LineBuffer(result)
+
+    def filter(self, func):
+        """
+        Filters a line.
+        """
+        return self.filter(filter_lines(func))
 
     def syllables(self):
         """
