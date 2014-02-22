@@ -37,3 +37,23 @@ def to_ass_time(time):
           time % (60*1000) // 1000,
           time % 1000 // 10
     )
+
+
+class cache(object):
+    """
+    Caches the function.
+    """
+
+    def __init__(self, func):
+        self.called = False
+        self.result = None
+        self.func = func
+
+        self.__doc__ = self.func.__doc__
+
+    def __call__(self, *args, **kwargs):
+        if self.called:
+            return self.result
+        self.called = True
+        self.result = self.func(*args, **kwargs)
+        return self.result
