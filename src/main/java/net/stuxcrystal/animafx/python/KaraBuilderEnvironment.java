@@ -58,7 +58,7 @@ public class KaraBuilderEnvironment implements ClassDictInit {
         dict.__setitem__("support", asTuple(
                 new PyString("styles"), new PyString("output"), new PyString("images"), new PyString("logging"))
         );
-        dict.__setitem__("attributes", asTuple(/*new PyString("no_edge_spaces")*/));
+        dict.__setitem__("attributes", asTuple("loglevel"));
     }
 
     @ExposedMethod

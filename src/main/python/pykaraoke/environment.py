@@ -388,7 +388,7 @@ class EmbeddedEnvironment(Environment):
         return Environment.log(self, level, msg, t, logger)
 
     def _get_log_level(self):
-        if "logging" not in self.support or "loglevel" not in self.attributes:
+        if ("logging" not in self.support) or ("loglevel" not in self.attributes):
             return Environment._get_log_level(self)
         return self.module.get_log_level()
 
