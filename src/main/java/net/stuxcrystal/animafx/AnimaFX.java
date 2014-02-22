@@ -125,19 +125,7 @@ public class AnimaFX {
         this.options = ProgramOptions.parseOptions(arguments);
     }
 
-    /**
-     * Initializes AnimaFX.
-     */
-    private boolean initialize() {
-        if (options.has("?")) {
-            try {
-                ProgramOptions.printHelpTo(System.err);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
+    private void initLogger() {
         // Create a new logger.
         this.logger = Logger.getLogger("AnimaFX");
         this.logger.setUseParentHandlers(false);
@@ -151,14 +139,57 @@ public class AnimaFX {
         System.setErr(new PrintStream(new LogOutputStream(outputLogger, Level.WARNING), true));
         System.setOut(new PrintStream(new LogOutputStream(outputLogger, Level.INFO), true));
 
-        this.logger.info("Initializing AnimaFX...");
-        this.logger.info("AnimaFX currently runs on " + OperatingSystem.CURRENT_OPERATING_SYSTEM.toString());
-
         // Set debug mode.
         if (this.isDebug()) {
             this.logger.setLevel(Level.ALL);
             handler.setLevel(Level.ALL);
         }
+    }
+
+    private boolean readInput() {
+        // Reading input file.
+        this.logger.fine("Reading input file");
+        try {
+            this.input.load((InputStream) this.options.valueOf("input"));
+        } catch (IOException e) {
+            this.logger.log(Level.SEVERE, "Failed to load file", e);
+            this.logger.severe("Cannot read input file: Aborting");
+            return true;
+        } finally {
+            try { ((InputStream)this.options.valueOf("input")).close(); } catch (IOException ignored) {}
+        }
+        return false;
+    }
+
+    private void loadCache() {
+        this.logger.fine("Loading attachments into cache...");
+        try {
+            this.cache.addFile(this.input);
+        } catch (IOException e) {
+            this.logger.log(Level.WARNING, "Failed to load attachments", e);
+        }
+    }
+
+    private void printHelp() {
+        try {
+            ProgramOptions.printHelpTo(System.err);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Initializes AnimaFX.
+     */
+    private boolean initialize() {
+        if (options.has("?")) {
+            this.printHelp();
+            return false;
+        }
+
+        this.initLogger();
+        this.logger.info("Initializing AnimaFX...");
+        this.logger.info("AnimaFX currently runs on " + OperatingSystem.CURRENT_OPERATING_SYSTEM.toString());
 
         // Enforce Headless-Mode if specified.
         if (options.has("n")) {
@@ -181,28 +212,14 @@ public class AnimaFX {
         this.input = new AssFile();
         this.output = new AssFile();
 
-        // Reading input file.
-        this.logger.fine("Reading input file");
-        try {
-            this.input.load((InputStream) this.options.valueOf("input"));
-        } catch (IOException e) {
-            this.logger.log(Level.SEVERE, "Failed to load file", e);
-            this.logger.severe("Cannot read input file: Aborting");
+        // Read Input Fle.
+        if (this.readInput())
             return false;
-        } finally {
-            try { ((InputStream)this.options.valueOf("input")).close(); } catch (IOException ignored) {}
-        }
 
+        // Load the data.
         this.inputData = new AssDocument(this, this.input);
         this.logger.fine("Calculating Resolution...");
         this.inputData.getSize();
-
-        this.logger.fine("Loading attachments into cache...");
-        try {
-            this.cache.addFile(this.input);
-        } catch (IOException e) {
-            this.logger.log(Level.WARNING, "Failed to load attachments", e);
-        }
 
         // Print debug message.
         this.logger.fine("Completed initialization.");
@@ -287,6 +304,8 @@ public class AnimaFX {
         List<AssInfoEntry> iEntries = new ArrayList<>(this.input.getInfoEntries());
         if (!this.options.has("clean"))
             return iEntries;
+
+        this.logger.fine("Cleaning up ScriptInfo.");
 
         List<AssInfoEntry> result = new ArrayList<>();
         for (AssInfoEntry entry : iEntries) {
