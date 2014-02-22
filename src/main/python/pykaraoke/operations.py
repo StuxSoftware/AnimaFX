@@ -31,7 +31,8 @@ from environment import get_environment
 __author__ = 'StuxCrystal'
 
 __all__ = [
-    "set_text", "set_value", "set_extension"
+    "set_text", "set_value", "set_extension",
+    "retime", "frame4frame"
 ]
 
 

@@ -30,12 +30,20 @@ from environment import get_environment
 
 __author__ = 'StuxCrystal'
 
-__all__ = ["Style", "Line", "Syllable", "get_viewport"]
+__all__ = ["Style", "Line", "Syllable", "Viewport"]
 
-class _Viewport(object):
+class Viewport(object):
     """
     Viewports.
     """
+
+    # Singleton instance.
+    _viewport = None
+
+    def __new__(cls):
+        if Viewport._viewport is not None:
+            return Viewport._viewport
+        return super(cls).__new__(cls)
 
     def __init__(self):
         """
@@ -207,17 +215,3 @@ class Line(ExtensibleObject):
                 line.syllables.append(Syllable(line=line, **syllable))
             result.append(line)
         return result
-
-#######################################################################################################################
-# The internal viewport.
-_viewport = None
-
-
-def get_viewport():
-    """
-    Returns the viewport.
-    """
-    global _viewport
-    if _viewport is None:
-        _viewport = _Viewport()
-    return _viewport

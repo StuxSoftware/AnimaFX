@@ -29,7 +29,7 @@ from styles import StyleManager
 from operations import set_text, set_value, set_extension, retime
 from processors import process as process_lines
 from environment import get_environment
-from structures import Style, Line
+from structures import Line
 __author__ = 'StuxCrystal'
 
 

@@ -8,6 +8,8 @@ from document import Document
 
 __author__ = 'StuxCrystal'
 
+__all__ = ["Image"]
+
 #
 # This is a simple shape to support pixels.
 #

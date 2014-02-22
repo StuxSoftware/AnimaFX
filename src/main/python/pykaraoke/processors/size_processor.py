@@ -25,7 +25,7 @@
 """
 Contains processors for sizes and placements.
 """
-from pykaraoke.structures import get_viewport
+from pykaraoke.structures import Viewport
 from base import ProcessingContext, Processor, MultiProcessor
 
 __author__ = 'StuxCrystal'
@@ -115,7 +115,7 @@ class DefaultPositionProcessor(BasePositionProcessor):
     """
 
     def _pre_process(self, lines, ctx):
-        ctx.resolution = get_viewport().resolution
+        ctx.resolution = Viewport().resolution
         ctx.space_widths = {}
         ctx.linectx = {}
 
@@ -165,7 +165,7 @@ class KanjiPositionProcessor(BasePositionProcessor):
     """
 
     def _pre_process(self, lines, ctx):
-        ctx.resolution = get_viewport().resolution
+        ctx.resolution = Viewport().resolution
         ctx.linectx = {}
 
         for line in lines:

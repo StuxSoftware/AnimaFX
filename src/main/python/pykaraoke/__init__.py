@@ -28,10 +28,22 @@ any environment that is capable of using "TextExtents".
 """
 __author__ = 'StuxCrystal'
 
-from structures import Style, Line, Syllable, get_viewport
+from styles import StyleManager
+from structures import Style, Line, Syllable, Viewport
 
 from environment import get_environment, set_environment
 from environment import Environment
 from environment import EnvironmentRedefinitionException, UnsupportedOperationException
 
 from document import Document, EnvironmentDocument, InputDocument, OutputDocument, LineBuffer
+from images import Image
+
+__all__ = [
+    "StyleManager",
+    "Style", "Line", "Syllable", "Viewport",
+    "get_environment", "set_environment",
+    "Environment",
+    "EnvironmentRedefinitionException", "UnsupportedOperationException",
+    "Document", "EnvironmentDocument", "InputDocument", "OutputDocument", "LineBuffer",
+    "Image"
+]
