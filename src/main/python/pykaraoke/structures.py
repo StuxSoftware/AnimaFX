@@ -25,10 +25,12 @@
 """
 Returns common types of karabuilder.
 """
-from styles import StyleManager
+from styles import StyleManager, Style
 from environment import get_environment
 
 __author__ = 'StuxCrystal'
+
+__all__ = ["Style", "Line", "Syllable", "get_viewport"]
 
 class _Viewport(object):
     """
@@ -70,96 +72,7 @@ class _Viewport(object):
         """
         Returns all styles.
         """
-        return Style.get_all_styles()
-
-
-class Style(object):
-    """
-    Represents a simple style.
-    """
-
-    def __init__(self, name, font, size, italic, bold, spacing=0):
-        """
-        Creates a new style object.
-        """
-        self.name = name
-        self.font = font
-        self.size = size
-        self.italic = italic
-        self.bold = bold
-        self.spacing = spacing
-
-    def text_extents(self, text):
-        """
-        Returns the text-extents of the given style.
-        """
-        environment = get_environment()
-
-        # If the environment does support styles,
-        # check if the meta-data equals each other and if so, let the environment calculate
-        # the values using the name of the style only.
-        if environment.styles_supported:
-            orig = Style.get_style(self.name)
-
-            # Check if the styles equal each other.
-            if orig is not None and self == orig:
-                # If so, only use the style name.
-                return environment.text_extents(self.name, text)
-
-        # Use a dictionary if styles are not supported or
-        return environment.text_extents(self._to_dict(), text)
-
-    def copy(self):
-        """
-        Copies the style.
-        """
-        return Style(**self._to_dict())
-
-    def __repr__(self):
-        return "<Style '%s' font:'%s' size:%d bold:%r italic:%r>" % (self.name, self.font, self.size, self.bold, self.italic)
-
-    def _to_dict(self):
-        """
-        Transforms the style to the internal dictionary type of the style.
-        """
-        return {"name": self.name, "font": self.font, "size": self.size, "bold": self.bold, "italic": self.italic}
-
-    def __eq__(self, other):
-        """
-        Checks if both styles are equal.
-        """
-        if other is None or not isinstance(other, Style):
-            return False
-        return self._to_dict() == other._to_dict()
-
-    @staticmethod
-    def get_all_styles():
-        """
-        Returns all styles inside the environment. If the environment
-        does not support styles, the styles in the document are used.
-        """
         return StyleManager.resolve().get_styles()
-
-    @staticmethod
-    def get_style(name):
-        """
-        Returns the style of the environment.
-        If the environment does not support styles, the first style with the same name
-        in the input document will be used.
-        """
-        return StyleManager.resolve().get_style(name)
-
-    @staticmethod
-    def _from_dict(dict, name=None):
-        # If the dict is None, return None.
-        if dict is None:
-            return None
-
-        # If the name is not in the dict add the name to the dict.
-        # Also makes sure that name is not passed twice.
-        if name is not None:
-            dict["name"] = name
-        return Style(**dict)
 
 
 class ExtensibleObject(object):
