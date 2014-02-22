@@ -23,9 +23,11 @@
 #
 
 """
-Defines the environment for karabuilder.
-
+Defines the environment for PyKaraoke.
 """
+import sys
+import time
+import logging
 from utils import to_ass_time
 __author__ = 'Stux'
 __all__ = [
@@ -139,6 +141,25 @@ class Environment(object):
     def _get_style_manager(self):
         raise UnsupportedOperationException
 
+    def get_level_mapping(self):
+        return {
+            logging.CRITICAL: logging.CRITICAL,
+            logging.ERROR:    logging.ERROR,
+            logging.WARNING:  logging.WARNING,
+            logging.INFO:     logging.INFO,
+            logging.DEBUG:    logging.DEBUG,
+        }
+
+    def log(self, level, msg, t, logger):
+        print >>sys.stderr, "[%s][%s][%s] %s"%(logger, logging.getLevelName(level), time.strftime("%X", t), msg)
+
+    def _get_log_level(self):
+        return logging.INFO
+
+    @property
+    def log_level(self):
+        return self._get_log_level()
+
     @property
     def stylemanager(self):
         if "stylemgr" not in self.attributes:
@@ -180,10 +201,11 @@ class EmbeddedEnvironment(Environment):
     | "_environment.support"
     | | This attribute is a tuple of strings containing of all supported extensions to pykaraoke.
     | | These strings are currently supported
-    | | > "images" : If the environments supports images.
-    | | > "styles" : Supports styles.
-    | | > "output" : Uses an external output file. (That means that kara-build will not write into stdout.)
-    | | > "vinfo"  : If the environment has meta-data about the video (e.g. fps)
+    | | > "images"  : If the environments supports images.
+    | | > "styles"  : Supports styles.
+    | | > "output"  : Uses an external output file. (That means that kara-build will not write into stdout.)
+    | | > "vinfo"   : If the environment has meta-data about the video (e.g. fps)
+    | | > "logging" : If the environment supports logging.
     |
     | "_environment.attributes"
     | | This attribute is a tuple of strings containing all flags of the environment. This can either be
@@ -248,6 +270,19 @@ class EmbeddedEnvironment(Environment):
     If "vinfo" is in "_environment.support()"
     | "_environment.get_fps()"
     | | Returns a float containing the fps.
+
+    If "logging" is in "_environment.support()"
+    | "_environment.get_level_mapping()"
+    | | Returns a mapping of levels.
+    | | { PYTHON_LOG_LEVEL: INTERNAL_LOG_LEVEL}
+    |
+    | "_environment.log(object:level, str:text, long:time, str:logger)"
+    | | level from _environment.get_level_mapping
+    | | Logs the message in the given level.
+    |
+    | If "log_level" in _environment.attributes:
+    | | "_environment.get_log_level()"
+    | | | Returns the current log level.
     """
     def __init__(self):
         try:
@@ -342,6 +377,21 @@ class EmbeddedEnvironment(Environment):
         # Not supported in EmbeddedEnvironments.
         return None
 
+    def get_level_mapping(self):
+        if "logging" in self.support:
+            return self.module.get_level_mapping()
+        return Environment.get_level_mapping(self)
+
+    def log(self, level, msg, t, logger):
+        if "logging" in self.support:
+            return self.module.log(level, msg, t, logger)
+        return Environment.log(self, level, msg, t, logger)
+
+    def _get_log_level(self):
+        if "logging" not in self.support or "loglevel" not in self.attributes:
+            return Environment._get_log_level(self)
+        return self.module.get_log_level()
+
     def __repr__(self):
         return "<EmbeddedEnvironment: " + self.module.name + ">"
 
@@ -354,6 +404,13 @@ def set_environment(environment):
     if _environment is not None:
         raise EnvironmentRedefinitionException("You cannot redefine the current environment.")
     _environment = environment
+    _environment.log(
+        _environment.get_level_mapping()[logging.DEBUG],
+        "Using Environment: %r" % _environment,
+        time.time(),
+        "PyKaraoke"
+    )
+
 
 def get_environment():
     """

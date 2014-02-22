@@ -24,6 +24,7 @@
 """
 Class to support images.
 """
+from logs import get_internal_logger
 from calc.graphics import AffineTransform, Vector
 from environment import get_environment
 from structures import Line
@@ -129,5 +130,6 @@ class Image(Document):
 
     def _get_lines(self):
         if self.pixels is None:
+            get_internal_logger().debug("Query image...")
             self.pixels = self._get_pixels()
         return self.pixels

@@ -49,6 +49,11 @@ public class PythonLanguage implements LanguageHandler {
     private static final HashMap<String, Class<?>> EXTENSION_MODULES = new HashMap<>();
 
     /**
+     * Reference to the logger.
+     */
+    static Logger LOGGER = null;
+
+    /**
      * Register the extension modules.
      */
     static {
@@ -69,6 +74,10 @@ public class PythonLanguage implements LanguageHandler {
         logger.setUseParentHandlers(true);
         logger.setParent(karaoke.getLogger());
 
+        // Create the logger for logging.
+        LOGGER = Logger.getLogger("Python::Logger");
+        LOGGER.setParent(logger);
+
         // Prepare the interpreter.
         PythonInterpreter interp = new PythonInterpreter();
         interp.setOut(new LogOutputStream(logger, Level.INFO));
@@ -77,6 +86,7 @@ public class PythonLanguage implements LanguageHandler {
         // Execute the script.
         interp.execfile(new FileInputStream(file), file.getName());
 
+        this.destroy(interp);
     }
 
     /**
@@ -84,6 +94,14 @@ public class PythonLanguage implements LanguageHandler {
      */
     private void initialize() {
         this.registerModules();
+    }
+
+    /**
+     * Destroys the interpreter.
+     * @param interp The interpreter to destroy.
+     */
+    public void destroy(PythonInterpreter interp) {
+        interp.cleanup();
     }
 
     /**

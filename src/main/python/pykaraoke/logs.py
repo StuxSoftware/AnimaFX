@@ -21,31 +21,49 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-
 """
-Karabuilder is the high-level library to generate karaoke effects using
-any environment that is capable of using "TextExtents".
+Provides features for logging.
 """
+import logging
+from environment import get_environment
 __author__ = 'StuxCrystal'
+__all__ = ["EnvironmentHandler", "get_logger"]
 
-from styles import StyleManager
-from structures import Style, Line, Syllable, Viewport
 
-from environment import get_environment, set_environment
-from environment import Environment
-from environment import EnvironmentRedefinitionException, UnsupportedOperationException
+class EnvironmentHandler(logging.Handler):
 
-from document import Document, EnvironmentDocument, InputDocument, OutputDocument, LineBuffer
-from images import Image
+    def __init__(self):
+        super(EnvironmentHandler, self).__init__()
+        self.environment = get_environment()
 
-from logs import get_logger, EnvironmentHandler
+    def emit(self, record):
+        if record.levelno == logging.NOTSET:
+            record.levelno = logging.INFO
 
-__all__ = [
-    "StyleManager",
-    "Style", "Line", "Syllable", "Viewport",
-    "get_environment", "set_environment",
-    "Environment",
-    "EnvironmentRedefinitionException", "UnsupportedOperationException",
-    "Document", "EnvironmentDocument", "InputDocument", "OutputDocument", "LineBuffer",
-    "Image"
-]
+        level = self.environment.get_level_mapping()[record.levelno]
+        time = record.created
+        msg = record.getMessage()
+        logger = record.name
+
+        self.environment.log(level, msg, time, logger)
+
+
+_logger = None
+def get_internal_logger():
+    """
+    Returns the internal logger of PyKaraoke.
+    """
+    global _logger
+    if _logger is None:
+        _logger = logging.getLogger('PyKaraoke')
+        _logger.addHandler(EnvironmentHandler())
+        _logger.setLevel(get_environment().log_level)
+    return _logger
+
+def get_logger(name=None):
+    if name:
+        logger = logging.getLogger(name)
+        logger.parent = get_internal_logger()
+        return logger
+    else:
+        return get_internal_logger()

@@ -40,6 +40,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * The environment for pykaraoke.
@@ -53,7 +55,9 @@ public class KaraBuilderEnvironment implements ClassDictInit {
     public static void classDictInit(PyObject dict) {
         dict.__setitem__("__doc__", new PyString("The environment for PyKaraoke."));
         dict.__setitem__("name", new PyString("AnimaFX " + AnimaFX.VERSION));
-        dict.__setitem__("support", asTuple(new PyString("styles"), new PyString("output"), new PyString("images")));
+        dict.__setitem__("support", asTuple(
+                new PyString("styles"), new PyString("output"), new PyString("images"), new PyString("logging"))
+        );
         dict.__setitem__("attributes", asTuple(/*new PyString("no_edge_spaces")*/));
     }
 
@@ -325,6 +329,44 @@ public class KaraBuilderEnvironment implements ClassDictInit {
         dictionary.put(new PyString("italic"), Py.java2py(style.isItalic()));
         dictionary.put(new PyString("spacing"), Py.java2py(style.getSpacing()));
         return dictionary;
+    }
+
+    @ExposedMethod
+    public static PyObject get_level_mapping(PyObject[] args, String[] kwargs) {
+        PyDictionary dictionary = new PyDictionary();
+        dictionary.put(Py.newInteger(50), Py.java2py(Level.SEVERE));
+        dictionary.put(Py.newInteger(40), Py.java2py(Level.SEVERE));
+        dictionary.put(Py.newInteger(30), Py.java2py(Level.WARNING));
+        dictionary.put(Py.newInteger(20), Py.java2py(Level.INFO));
+        dictionary.put(Py.newInteger(10), Py.java2py(Level.FINE));
+        return dictionary;
+    }
+
+    @ExposedMethod
+    public static PyObject log(PyObject[] args, String[] kwargs) {
+        ArgParser parser = new ArgParser("log", args, kwargs, new String[]{"level", "msg", "time", "logger"});
+
+        Level level = Py.tojava(parser.getPyObject(0), Level.class);
+        String msg = Py.tojava(parser.getPyObject(1), String.class);
+        long time = (long) (Py.tojava(parser.getPyObject(2), Float.class) * 1000);
+        String logger = Py.tojava(parser.getPyObject(3), String.class);
+
+        LogRecord record = new LogRecord(level, msg);
+        record.setMillis(time);
+        record.setLoggerName(logger!=null?("Python::" + logger):"Python::Logger");
+
+        PythonLanguage.LOGGER.log(record);
+
+        return Py.None;
+    }
+
+    @ExposedMethod
+    public static PyObject get_log_level(PyObject[] args, String[] kwargs) {
+        if (KaraokeToolkit.getToolkit().getAnimaFX().isDebug()) {
+            return Py.java2py(10);
+        } else {
+            return Py.java2py(20);
+        }
     }
 
     /**
