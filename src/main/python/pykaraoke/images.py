@@ -3,7 +3,7 @@ Class to support images.
 """
 from calc.graphics import AffineTransform, Vector
 from environment import get_environment
-from types import Line
+from structures import Line
 from document import Document
 
 __author__ = 'StuxCrystal'

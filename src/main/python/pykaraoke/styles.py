@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from types import Style
+from structures import Style
 from environment import get_environment
 
 __author__ = 'StuxCrystal'
