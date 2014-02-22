@@ -44,7 +44,8 @@ class Viewport(object):
     def __new__(cls):
         if Viewport._viewport is not None:
             return Viewport._viewport
-        return super(cls).__new__(cls)
+        Viewport._viewport = super(Viewport, cls).__new__(cls)
+        return Viewport._viewport
 
     def __init__(self):
         """

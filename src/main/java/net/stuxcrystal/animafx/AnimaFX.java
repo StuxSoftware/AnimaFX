@@ -45,10 +45,15 @@ import java.util.logging.*;
 public class AnimaFX {
 
     /**
+     * Returns the current version  of AnimaFX
+     */
+    public static final String VERSION = "0.1-Alpha.2";
+
+    /**
      * The internal header of AnimaFX.
      */
     private static final String[] HEADER = {
-            "AnimaFX 0.1-Alpha.2",
+            "AnimaFX " + VERSION,
             "(c) 2014 StuxCrystal"
     };
 
@@ -280,7 +285,9 @@ public class AnimaFX {
 
         StringWriter writer = new StringWriter();
         this.output.setInfoEntries(this.getOutputInfoEntries());
-        this.output.getInfoEntries().add(new AssInfoEntry("Header", "Created by AnimaFX.\nhttp://github.com/StuxSoftware/AnimaFX"));
+        this.output.getInfoEntries().add(
+                new AssInfoEntry("Header", "Created by AnimaFX " + VERSION + "\nhttp://github.com/StuxSoftware/AnimaFX")
+        );
         try {
             this.output.dump(writer);
         } catch (IOException e) {

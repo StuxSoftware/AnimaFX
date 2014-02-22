@@ -51,8 +51,8 @@ public class KaraBuilderEnvironment implements ClassDictInit {
      * @param dict The dictionary.
      */
     public static void classDictInit(PyObject dict) {
-        dict.__setitem__("__doc__", new PyString("The environment for KaraBuilder."));
-        dict.__setitem__("name", new PyString("AnimaFX"));
+        dict.__setitem__("__doc__", new PyString("The environment for PyKaraoke."));
+        dict.__setitem__("name", new PyString("AnimaFX " + AnimaFX.VERSION));
         dict.__setitem__("support", asTuple(new PyString("styles"), new PyString("output"), new PyString("images")));
         dict.__setitem__("attributes", asTuple(/*new PyString("no_edge_spaces")*/));
     }
