@@ -66,7 +66,7 @@ class StyleManager(object):
 
     @staticmethod
     @cache
-    def _resolve():
+    def resolve():
         """
         Returns the style manager for this environment.
         """
