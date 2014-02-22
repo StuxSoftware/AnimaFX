@@ -59,3 +59,25 @@ def beziere(t, *points):
             cur_point[c] += bern * coord
 
     return Vector(*cur_point)
+
+###########################################################################################
+# Interpolations
+def clamp(minimal, maximal, value):
+    """
+    Clamps the value.
+    """
+    return max(minimal, min(maximal, value))
+
+
+def interpolate(t, start, end):
+    """
+    Interpolates the value for the given time.
+    """
+    return t*(end-start) + start
+
+
+def interpolate_alpha(t, start, end):
+    """
+    Interpolates the alpha value.
+    """
+    return "&H%02X&"%clamp(0, 255, interpolate(t, start, end))
