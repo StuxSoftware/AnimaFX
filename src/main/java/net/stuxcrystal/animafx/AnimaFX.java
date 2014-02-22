@@ -35,6 +35,8 @@ import java.awt.Toolkit;
 import java.awt.GraphicsEnvironment;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.*;
 
 /**
@@ -42,10 +44,21 @@ import java.util.logging.*;
  */
 public class AnimaFX {
 
+    /**
+     * The internal header of AnimaFX.
+     */
     private static final String[] HEADER = {
             "AnimaFX 0.1-Alpha.2",
-            "(c) 2014 StuxCrystal",
+            "(c) 2014 StuxCrystal"
     };
+
+    /**
+     * The headers to keep when the headers should be cleaned.
+     */
+    private static List<String> CLEANED_HEADERS = Arrays.asList(System.getProperty(
+            "animafx.clean.entries",
+            "Collisions,PlayResX,PlayResY,ScaledBorderAndShadow,ScriptType,Video_Colorspace,YCbCr_Matrix,WrapStyle"
+    ).replace("_", " ").split(","));
 
     public static void main(String[] args) {
 
@@ -249,8 +262,8 @@ public class AnimaFX {
         this.logger.info("Writing lines...");
 
         StringWriter writer = new StringWriter();
-        this.output.setInfoEntries(new ArrayList<>(this.input.getInfoEntries()));
-        this.output.getInfoEntries().add(new AssInfoEntry("Header", "Created by AnimaFX."));
+        this.output.setInfoEntries(this.getOutputInfoEntries());
+        this.output.getInfoEntries().add(new AssInfoEntry("Header", "Created by AnimaFX.\nhttp://github.com/StuxSoftware/AnimaFX"));
         try {
             this.output.dump(writer);
         } catch (IOException e) {
@@ -268,6 +281,19 @@ public class AnimaFX {
         }
 
         this.logger.info("Execution completed...");
+    }
+
+    private List<AssInfoEntry> getOutputInfoEntries() {
+        List<AssInfoEntry> iEntries = new ArrayList<>(this.input.getInfoEntries());
+        if (!this.options.has("clean"))
+            return iEntries;
+
+        List<AssInfoEntry> result = new ArrayList<>();
+        for (AssInfoEntry entry : iEntries) {
+            if (CLEANED_HEADERS.contains(entry.getKey()))
+                result.add(entry);
+        }
+        return result;
     }
 
     /**

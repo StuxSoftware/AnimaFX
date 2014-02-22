@@ -106,6 +106,8 @@ public class ProgramOptions {
                 .withRequiredArg()
                 .ofType(File.class)
                 .required();
+
+        acceptsAll(asList("clean"), "Cleans the script-info-section");
     }};
 
     /**

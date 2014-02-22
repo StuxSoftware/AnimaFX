@@ -16,6 +16,7 @@ Arguments:
 -o    --output               The output file (ass) [Defaults to Std-Out]
 -s    --script               The script file.
 
+      --clean                Cleans the Script-Info-Section.
 
 Properties
 ==============================================================================
@@ -27,5 +28,9 @@ animafx.screen.dpi=79 or 96    The font size in java is given in pt and
                                converted in pt. Unfortunately the DPI
                                does affect the conversion factor.
                                The actual default value depends on the OS.
+
+animafx.clean.entries          The headers to keep when the headers should
+                               be keeped. This is a comma separated list.
+                               Use underscores to denote blanks.
 
 The logger-output of AnimaFX is redirected to the error stream.
