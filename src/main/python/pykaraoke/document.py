@@ -25,6 +25,7 @@
 """
 Represents the input and the output document.
 """
+from styles import StyleManager
 from operations import set_text, set_value, set_extension, retime
 from processors import process as process_lines
 from environment import get_environment
@@ -267,7 +268,18 @@ class EnvironmentDocument(Document):
     """
     Base-Class for Documents using the environment.
     """
-    pass
+
+    def get_style_manager(self):
+        """
+        Returns the style manager of the environment.
+        """
+        return StyleManager.resolve()
+
+    def get_environment(self):
+        """
+        Returns the environment the software is running under.
+        """
+        return get_environment()
 
 
 class InputDocument(EnvironmentDocument):
@@ -277,8 +289,6 @@ class InputDocument(EnvironmentDocument):
 
     def __init__(self):
         self.lines = Line.get_lines()
-        if get_environment().styles_supported:
-            self.styles = Style.get_all_styles()
 
     def _support_line_reading(self):
         """
@@ -290,7 +300,7 @@ class InputDocument(EnvironmentDocument):
         """
         This document supports styles if the environment supports styles.
         """
-        return get_environment().styles_supported()
+        return True
 
     def _get_lines(self):
         """
@@ -302,17 +312,13 @@ class InputDocument(EnvironmentDocument):
         """
         Returns all styles if they are supported.
         """
-        if not self.supports_styles:
-            return {}
-        return self.styles
+        return StyleManager.resolve().get_styles()
 
     def get_style(self, name):
         """
         Returns the style with the given name.
         """
-        if not self.supports_styles or name not in self.styles:
-            return None
-        return self.styles[name]
+        return StyleManager.resolve().get_style(name)
 
 
 class OutputDocument(EnvironmentDocument):

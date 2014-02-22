@@ -25,7 +25,8 @@
 """
 Returns common types of karabuilder.
 """
-from .environment import get_environment
+from styles import StyleManager
+from environment import get_environment
 
 __author__ = 'StuxCrystal'
 
@@ -134,42 +135,31 @@ class Style(object):
     @staticmethod
     def get_all_styles():
         """
-        Returns all styles inside the environment. Returns a empty dictionary if styles are not supported by
-        the underlying environment.
+        Returns all styles inside the environment. If the environment
+        does not support styles, the styles in the document are used.
         """
-
-        environment = get_environment()
-
-        # Do not return anything if the environment does not store styles.
-        if not environment.styles_supported:
-            return {}
-
-        # Returns a dictionary of all supported styles.
-        result = {}
-        for name, data in environment.get_styles().items():
-            result[name] = Style(name=name, **data)
-        return result
+        return StyleManager.resolve().get_styles()
 
     @staticmethod
     def get_style(name):
         """
-        Returns the style of the environment. Returns None if styles are not supported by the underlying
-        environment.
+        Returns the style of the environment.
+        If the environment does not support styles, the first style with the same name
+        in the input document will be used.
         """
+        return StyleManager.resolve().get_style(name)
 
-        environment = get_environment()
-
-        # Do not return anything if the environment does not store styles.
-        if not environment.styles_supported:
+    @staticmethod
+    def _from_dict(dict, name=None):
+        # If the dict is None, return None.
+        if dict is None:
             return None
 
-        # Retrieve the style and return None if the style does not exist.
-        data = environment.get_style(name)
-        if data is None:
-            return None
-
-        # Make this thing a style object.
-        return Style(name=name, **data)
+        # If the name is not in the dict add the name to the dict.
+        # Also makes sure that name is not passed twice.
+        if name is not None:
+            dict["name"] = name
+        return Style(**dict)
 
 
 class ExtensibleObject(object):

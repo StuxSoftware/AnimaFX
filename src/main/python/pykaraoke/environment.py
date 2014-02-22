@@ -136,6 +136,37 @@ class Environment(object):
     def get_fps(self):
         return None
 
+    def _get_style_manager(self):
+        raise UnsupportedOperationException
+
+    @property
+    def stylemanager(self):
+        if "stylemgr" not in self.attributes:
+            return None
+        return self._get_style_manager()
+
+    @property
+    def images_supported(self):
+        return "images" in self.support
+
+    @property
+    def styles_supported(self):
+        return "styles" in self.support
+
+    @property
+    def needs_full_generation(self):
+        """
+        Checks if KaraBuilder needs to generate a complete ASS-File.
+        """
+        return "output" not in self.support
+
+    @property
+    def video_info_supported(self):
+        """
+        Can you query meta-data about the video.
+        """
+        return "vinfo" in self.styles_supported
+
 
 class EmbeddedEnvironment(Environment):
     """
@@ -157,8 +188,9 @@ class EmbeddedEnvironment(Environment):
     | "_environment.attributes"
     | | This attribute is a tuple of strings containing all flags of the environment. This can either be
     | | bugs that PyKaraoke can work around with or specific properties of some callback functions.
-    | | > "no_edge_spaces" : Spaces on the edges are not supported. The text_extent function have support
-    | |                      to return the width of a single space.
+    | | > "stylemgr"       : This environment has its own style manager. Use "environment.stylemanager"
+    | |                      to get the style manager.
+    | |                      (Only supported in non embedded environments)
     |
     | "_environment.text_extents(dict[font=None, size=0, bold=False, italic=False] or stylename, str:text)
     | | Returns the boundary of the given string. (type: dict)
@@ -176,6 +208,8 @@ class EmbeddedEnvironment(Environment):
     | | Returns a two dimensional array of syllables.
     | | Each array inside the list represents each line. The first element of the array are metadata about
     | | the line.
+    | |
+    | | The function may be called multiple times.
     | |
     | | The metadata about the line.
     | | > {"start":int, "end":int,
@@ -304,27 +338,9 @@ class EmbeddedEnvironment(Environment):
             return self.module.get_fps()
         return None
 
-    @property
-    def images_supported(self):
-        return "images" in self.support
-
-    @property
-    def styles_supported(self):
-        return "styles" in self.support
-
-    @property
-    def needs_full_generation(self):
-        """
-        Checks if KaraBuilder needs to generate a complete ASS-File.
-        """
-        return "output" not in self.support
-
-    @property
-    def video_info_supported(self):
-        """
-        Can you query meta-data about the video.
-        """
-        return "vinfo" in self.styles_supported
+    def _get_style_manager(self):
+        # Not supported in EmbeddedEnvironments.
+        return None
 
     def __repr__(self):
         return "<EmbeddedEnvironment: " + self.module.name + ">"
