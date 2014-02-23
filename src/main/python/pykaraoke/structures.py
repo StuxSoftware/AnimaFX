@@ -137,6 +137,13 @@ class Syllable(ExtensibleObject):
     def end(self):
         return self.start + self.duration*10
 
+    @end.setter
+    def end(self, value):
+        if value < self.start:
+            raise ValueError("End may not be sooner than start.")
+
+        self.duration = (value-self.start)/10
+
 
 class Line(ExtensibleObject):
     """

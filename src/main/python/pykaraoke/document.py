@@ -247,6 +247,95 @@ class Document(object):
 
         return iter(result)
 
+    def __getitem__(self, index):
+        """
+        Returns an item or multiple items from the document.
+        If the item is acutally a slice, the values are sliced using the time.
+        To slice using lines use:
+        >>> LineBuffer(Document.get_lines()[::])
+        """
+        if isinstance(index, slice):
+            return self._slice(index)
+
+        return self._get_lines()[index].copy()
+
+    def slice(self, start, stop=None, step=None):
+        """
+        Slices according the line indexes.
+        """
+        if isinstance(start, slice):
+            return LineBuffer(self.get_lines()[start])
+        return self.slice(slice(start, stop, step))
+
+    def _slice(self, slice_obj):
+        start, stop, step = slice_obj.start, slice_obj.stop, slice_obj.step
+
+        # If stop is none set the stop to infinite.
+        if stop is None:
+            # Use infinite as end value.
+            stop = float("inf")
+
+        # If start is None, set the start to 0
+        if start is None:
+            start = 0
+
+        if stop < start:
+            raise ValueError("Stop must be grater than start.")
+
+        result = []
+        for line in self._get_lines():
+            # If the line starts after the end of the slice.
+            if line.start > stop or line.end < start:
+                continue
+
+            new_line = line.copy()
+            new_line.text = line.text
+
+            # Forcefully set start if the line starts before
+            # the slice.
+            if line.start < start:
+                new_line.start = start
+
+            # Forcefully set end if the line ends after the slice.
+            if line.end > stop:
+                new_line.end = stop
+
+            new_syllables = []
+            for syllable in line.syllables:
+                # Also slice the syllables.
+                if syllable.start > stop or syllable.end < start:
+                    continue
+
+                # Operate on a copy of the syllable.
+                new_syllable = syllable.copy()
+
+                # Clamp start.
+                if syllable.start < start:
+                    # Cache the end of the syllable.
+                    syl_end = syllable.end
+
+                    # Update the syllable.
+                    new_syllable.start = start
+                    new_syllable.end = syl_end
+
+                # Clamp end.
+                if syllable.end > stop:
+                    new_syllable.end = stop
+
+                new_syllables.append(new_syllable)
+
+            # Update syllable list.
+            new_line.syllables = new_syllables
+
+            result.append(new_line)
+
+        # Perform the step after the the times were calculated.
+        if step is not None:
+            result = result[::step]
+
+        # Return the result as a new line-buffer.
+        return LineBuffer(result)
+
 
 class LineBuffer(Document):
     """
