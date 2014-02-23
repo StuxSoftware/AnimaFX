@@ -326,7 +326,8 @@ class Document(object):
            The times are clamped for the lines and syllables.
            Any syllable that would be outside the time range will be dropped.
 
-           The step attribute handles
+           The step attribute has the same effect as if you would type
+           >>> Document[start, stop][::step]
 
         2) Float as step:
            >>> Document[:25510:23.978]
