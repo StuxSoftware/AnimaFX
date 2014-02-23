@@ -151,7 +151,7 @@ class Environment(object):
         }
 
     def log(self, level, msg, t, logger):
-        print >>sys.stderr, "[%s][%s][%s] %s"%(logger, logging.getLevelName(level), time.strftime("%X", t), msg)
+        print >>sys.stderr, "[%s][%s][%s] %s" % (logger, logging.getLevelName(level), time.strftime("%X", t), msg)
 
     def _get_log_level(self):
         return logging.INFO
