@@ -194,6 +194,15 @@ class Document(object):
             cur_time = line.start
             index = 0
 
+            has_syllables = len(line.syllables) > 0
+
+            # These values are metadata that are only used
+            # if the line has syllables.
+            if has_syllables:
+                syl_index = 0
+                last_syllable = line.syllables[0]
+                syl_lines = []
+
             while cur_time <= line.end:
                 cur_line = line.copy()
                 cur_line.extension = {}
@@ -201,13 +210,33 @@ class Document(object):
                 cur_time += duration
                 cur_line.end = min(int(math.ceil(cur_time)), line.end)
 
+                # Add metadata to the line.
                 cur_line["original"] = line
                 cur_line["index"] = index
+
+                # Add the syllable-data if the line has syllables.
+                if has_syllables:
+                    # Automatically detect the next syllable.
+                    while cur_line.end > last_syllable.end:
+                        syl_index += 1
+                        last_syllable = line.syllables[syl_index]
+
+                        # If there is a new syllable. Add the data to the lines.
+                        syl_count = len(syl_lines)
+                        for i, l in enumerate(syl_lines):
+                            l["syl_index"] = i
+                            l["syl_count"] = syl_count
+
+                        syl_lines = []
+
+                    cur_line["syllable"] = last_syllable
+                    syl_lines.append(cur_line)
 
                 result.append(cur_line)
 
                 index += 1
 
+            # Add the count of lines to each frame.
             line_count = len(result)
             for l in result:
                 l["count"] = line_count
