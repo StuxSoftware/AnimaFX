@@ -351,7 +351,7 @@ class Document(object):
 
         """
         if isinstance(index, slice):
-            return self._slice_times(index)
+            return self._slice(index)
 
         return self._get_lines()[index].copy()
 
