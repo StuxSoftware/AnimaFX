@@ -332,7 +332,10 @@ class Document(object):
            >>> Document[:25510:23.978]
 
            The start and stop value is treated as the frame number. The document will be
-           sliced as if time-objects were passed.
+           sliced as if time-objects were passed. Step represents the fps.
+
+           If start and/or stop is a string or a time-object, they will be used as
+           time.
 
            If step is smaller than 0 or "NaN", the fps passed by the environment will be
            used.
@@ -377,19 +380,28 @@ class Document(object):
         Slices according to the frame number.
         The step value will always be the fps number.
         """
+        # Retrieve the fps from the viewport.
         if slice_obj.step <= 0 or slice_obj.step == float("nan"):
             fps = Viewport().fps
 
             if fps is None:
                 raise RuntimeError("The FPS couldn't be retrieved")
 
+        # Calculate the length of each frame.
         frame_length = 100/slice_obj.step
 
         start, stop = None, None
-        if slice_obj.start is not None and isinstance(slice_obj.start, numbers.Number):
-            start = frame_length*slice_obj.start
-        if slice_obj.stop is not None and isinstance(slice_obj.stop, numbers.Number):
-            stop = frame_length*slice_obj.stop
+        # Convert start and stop to the actual time.
+        if slice_obj.start is not None:
+            if isinstance(slice_obj.start, (basestring, Time)):
+                start = slice_obj.start
+            else:
+                start = frame_length*slice_obj.start
+        if slice_obj.stop is not None:
+            if isinstance(slice_obj.start, (basestring, Time)):
+                stop = slice_obj.stop
+            else:
+                stop = frame_length*slice_obj.stop
 
         return self._slice_times(slice(start, stop, None))
 
