@@ -252,6 +252,12 @@ class Document(object):
         document.stream_to(self)
         return self
 
+    def copy(self):
+        """
+        Copies the contents of the document
+        """
+        return self[:]
+
     def _support_line_reading(self):
         """
         Internal function: Return true if reading from this document is supported.
