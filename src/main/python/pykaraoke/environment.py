@@ -29,7 +29,7 @@ import sys
 import time
 import logging
 from utils import to_ass_time
-__author__ = 'Stux'
+__author__ = 'StuxCrystal'
 __all__ = [
     # Exceptions
     "UnsupportedOperationException", "EnvironmentRedefinitionException",

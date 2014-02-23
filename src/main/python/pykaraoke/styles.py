@@ -25,7 +25,7 @@ from utils import cache
 from environment import get_environment
 
 __author__ = 'StuxCrystal'
-
+__all__ = ["StyleManager"]
 
 class Style(object):
     """

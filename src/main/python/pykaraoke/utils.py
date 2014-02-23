@@ -25,8 +25,7 @@
 """
 Utility functions for kara-builder.
 """
-from calc import clamp, Vector
-
+__author__ = 'StuxCrystal'
 
 class Time(int):
     """
