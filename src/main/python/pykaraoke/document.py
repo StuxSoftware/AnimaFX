@@ -26,7 +26,8 @@
 Represents the input and the output document.
 """
 import math
-import numbers
+
+from builders import DocumentBuilder
 
 from styles import StyleManager
 from processors import process as process_lines
@@ -257,6 +258,12 @@ class Document(object):
         Copies the contents of the document
         """
         return self[:]
+
+    def build(self):
+        """
+        Creates a build out of this document.
+        """
+        return DocumentBuilder(self)
 
     def _support_line_reading(self):
         """
