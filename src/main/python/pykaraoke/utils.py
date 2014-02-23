@@ -25,6 +25,24 @@
 """
 Utility functions for kara-builder.
 """
+from calc import clamp, Vector
+
+
+class Time(int):
+    """
+    Represents a time index in ass.
+    """
+
+    def __new__(cls, time):
+        if isinstance(time, basestring):
+            time = from_ass_time(time)
+        return int.__new__(cls, time)
+
+    def __repr__(self):
+        return "<Time %s>"%to_ass_time(self)
+
+    def __str__(self):
+        return to_ass_time(self)
 
 
 def to_ass_time(time):
@@ -37,6 +55,33 @@ def to_ass_time(time):
           time % (60*1000) // 1000,
           time % 1000 // 10
     )
+
+
+def from_ass_time(time):
+    """
+    Converts the ass-time to the time in milliseconds
+    """
+    h, m, _s = time.split(":")
+
+    h, m = int(h), int(m)
+
+    if "." in _s:
+        # Split times.
+        s, d = _s.split(".")
+
+        s, d = int(s), int(d)
+
+        # If time is given in deciseconds.
+        if len(_s.split(".")[1]) == 2:
+            d *= 10
+
+    else:
+        # If the milliseconds are not given.
+        s = int(_s)
+        d = 0
+
+    # Calculate the times.
+    return h*(60*60*1000) + m*(60*1000) + s*1000 + d
 
 
 class cache(object):

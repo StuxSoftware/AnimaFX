@@ -40,6 +40,8 @@ from images import Image
 
 from logs import get_logger, EnvironmentHandler
 
+from utils import Time
+
 __all__ = [
     "StyleManager",
     "Style", "Line", "Syllable", "Viewport",
@@ -48,4 +50,5 @@ __all__ = [
     "EnvironmentRedefinitionException", "UnsupportedOperationException",
     "Document", "EnvironmentDocument", "InputDocument", "OutputDocument", "LineBuffer",
     "Image"
+    "Time"
 ]

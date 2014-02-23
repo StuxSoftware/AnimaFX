@@ -29,7 +29,10 @@ from graphics import Vector
 import math
 
 __author__ = 'StuxCrystal'
-__all__ = ["choose", "bernstein", "beziere"]
+__all__ = [
+    "choose", "bernstein", "beziere"
+    "clamp", "interpolate", "interpolate_alpha"
+]
 
 
 def choose(n, k):
@@ -62,7 +65,7 @@ def beziere(t, *points):
 
 ###########################################################################################
 # Interpolations
-def clamp(minimal, maximal, value):
+def clamp(minimal, value, maximal):
     """
     Clamps the value.
     """

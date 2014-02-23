@@ -28,4 +28,5 @@ Provides useful functions for mathematics
 __author__ = 'StuxCrystal'
 
 from functions import beziere
+from functions import clamp, interpolate_alpha
 from graphics import Vector, AffineTransform

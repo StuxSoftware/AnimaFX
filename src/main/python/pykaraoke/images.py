@@ -26,6 +26,7 @@ Class to support images.
 """
 from logs import get_internal_logger
 from calc.graphics import AffineTransform, Vector
+from calc.functions import clamp
 from environment import get_environment
 from structures import Line
 from document import Document
@@ -112,8 +113,9 @@ class Image(Document):
         """
         result = 0
         shift = len(color)
-        for i, color in enumerate(color):
-            result |= color & 0xff << (shift-i)*8
+        for i, c in enumerate(color):
+            clamp(0, c, 255)
+            result |= c & 0xff << (shift-i)*8
         return result
 
     @staticmethod
@@ -127,6 +129,7 @@ class Image(Document):
         alpha = color >> 24 & 0xff
 
         return red, green, blue, alpha
+
 
     def _get_lines(self):
         if self.pixels is None:

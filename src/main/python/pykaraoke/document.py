@@ -25,11 +25,14 @@
 """
 Represents the input and the output document.
 """
+import numbers
+
 from styles import StyleManager
 from operations import set_text, set_value, set_extension, retime, filter_lines, frame4frame
 from processors import process as process_lines
 from environment import get_environment
-from structures import Line
+from structures import Line, Viewport
+from utils import from_ass_time, Time
 __author__ = 'StuxCrystal'
 
 
@@ -194,6 +197,11 @@ class Document(object):
         return document
 
     def stream_from(self, document):
+        """
+        Streams from another document.
+
+        Returns this document.
+        """
         document.stream_to(self)
         return self
 
@@ -250,25 +258,99 @@ class Document(object):
     def __getitem__(self, index):
         """
         Returns an item or multiple items from the document.
-        If the item is acutally a slice, the values are sliced using the time.
-        To slice using lines use:
-        >>> LineBuffer(Document.get_lines()[::])
+
+        If the given item is a slice,
+        there are three possibilities that depend on the values that are passed
+        as slice:
+
+        1) Strings or Time-Objects
+           >>> Document['0:22:30.00':'0:22:40.00':]
+           >>> Document[:Time('0:22:30.35')]
+
+           Any slice index can be none as long start or stop is either a string or a
+           time object.
+
+           The times are clamped for the lines and syllables.
+           Any syllable that would be outside the time range will be dropped.
+
+           The step attribute handles
+
+        2) Float as step:
+           >>> Document[:25510:23.978]
+
+           The start and stop value is treated as the frame number. The document will be
+           sliced as if time-objects were passed.
+
+           If step is smaller than 0 or "NaN", the fps passed by the environment will be
+           used.
+
+        3) Anything other
+           >>> Document[::]
+           >>> Document[:]
+           >>> Document[15:]
+           >>> Document[:32:1]
+
+           Slices according to the line indexes.
+
         """
         if isinstance(index, slice):
-            return self._slice(index)
+            return self._slice_times(index)
 
         return self._get_lines()[index].copy()
 
-    def slice(self, start, stop=None, step=None):
+    def _slice(self, slice_obj):
+        """
+        There are multiple possibilities for slices.
+        """
+        start, stop, step = slice_obj.start, slice_obj.stop, slice_obj.step
+        if (start is not None and isinstance(slice_obj, (basestring, Time))) or \
+                (stop is not None and isinstance(slice_obj, (basestring, Time))):
+            return self._slice_times(slice_obj)
+        elif isinstance(slice_obj.step, float):
+            return self._slice_frames(slice_obj)
+        else:
+            return self._slice_indices(start, stop, step)
+
+    def _slice_indices(self, start, stop=None, step=None):
         """
         Slices according the line indexes.
         """
         if isinstance(start, slice):
             return LineBuffer(self.get_lines()[start])
-        return self.slice(slice(start, stop, step))
+        return self._slice_indices(slice(start, stop, step))
 
-    def _slice(self, slice_obj):
+    def _slice_frames(self, slice_obj):
+        """
+        Slices according to the frame number.
+        The step value will always be the fps number.
+        """
+        if slice_obj.step <= 0 or slice_obj.step == float("nan"):
+            fps = Viewport().fps
+
+            if fps is None:
+                raise RuntimeError("The FPS couldn't be retrieved")
+
+        frame_length = 100/slice_obj.step
+
+        start, stop = None, None
+        if slice_obj.start is not None and isinstance(slice_obj.start, numbers.Number):
+            start = frame_length*slice_obj.start
+        if slice_obj.stop is not None and isinstance(slice_obj.stop, numbers.Number):
+            stop = frame_length*slice_obj.stop
+
+        return self._slice_times(slice(start, stop, None))
+
+    def _slice_times(self, slice_obj):
+        """
+        Slices according to the time
+        """
         start, stop, step = slice_obj.start, slice_obj.stop, slice_obj.step
+
+        # Convert string times to integers
+        if isinstance(start, basestring):
+            start = from_ass_time(start)
+        if isinstance(stop, basestring):
+            stop = from_ass_time(stop)
 
         # If stop is none set the stop to infinite.
         if stop is None:
@@ -335,6 +417,21 @@ class Document(object):
 
         # Return the result as a new line-buffer.
         return LineBuffer(result)
+
+    def __mul__(self, other):
+        """
+        Makes the lines appearing multiple times according to other.
+        """
+        def _mul(line):
+            result = []
+            for i in range(other):
+                new_line = line.copy()
+                new_line["original"] = line
+                new_line["index"] = i
+                new_line["count"] = other
+                result.append(new_line)
+            return result
+        return self.refactor(_mul)
 
 
 class LineBuffer(Document):
