@@ -263,7 +263,7 @@ class Document(object):
         """
         Creates a build out of this document.
         """
-        return DocumentBuilder(self)
+        return DocumentBuilder(self, LineBuffer)
 
     def _support_line_reading(self):
         """

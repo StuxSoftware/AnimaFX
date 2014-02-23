@@ -23,7 +23,6 @@
 #
 from pykaraoke.calc import Vector
 from pykaraoke.processors import ProcessingContext
-from pykaraoke.document import LineBuffer
 
 from values import Value, DynamicValue, Type
 from dumper import get_active_type, dump_tags
@@ -94,9 +93,10 @@ class DocumentBuilder(Builder):
     A builder that uses the document to process objects.
     """
 
-    def __init__(self, document):
+    def __init__(self, document, cls):
         Builder.__init__(self, None)
         self.document = document
+        self.cls = cls
 
         self.fps = None
         self.prefer_video = True
@@ -122,7 +122,7 @@ class DocumentBuilder(Builder):
             result = self._create_frame4frame()
         else:
             raise ValueError("Unknown type.")
-        return LineBuffer(result)
+        return self.cls(result)
 
     def _create_simple(self):
         result = []
