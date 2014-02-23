@@ -190,6 +190,14 @@ class Document(object):
         duration = 1000.0/fps
 
         def _refactor(line):
+
+            def register_syllables(syl_list):
+                # If there is a new syllable. Add the data to the lines.
+                syl_count = len(syl_list)
+                for i, l in enumerate(syl_list):
+                    l["syl_index"] = i
+                    l["syl_count"] = syl_count
+
             result = []
             cur_time = line.start
             index = 0
@@ -220,13 +228,7 @@ class Document(object):
                     while cur_line.end > last_syllable.end:
                         syl_index += 1
                         last_syllable = line.syllables[syl_index]
-
-                        # If there is a new syllable. Add the data to the lines.
-                        syl_count = len(syl_lines)
-                        for i, l in enumerate(syl_lines):
-                            l["syl_index"] = i
-                            l["syl_count"] = syl_count
-
+                        register_syllables(syl_lines)
                         syl_lines = []
 
                     cur_line["syllable"] = last_syllable
@@ -235,6 +237,9 @@ class Document(object):
                 result.append(cur_line)
 
                 index += 1
+
+            if has_syllables:
+                register_syllables(syl_lines)
 
             # Add the count of lines to each frame.
             line_count = len(result)
@@ -368,8 +373,9 @@ class Document(object):
            The step attribute has the same effect as if you would type
            >>> Document[start, stop][::step]
 
-        2) Float as step:
+        2) Float or Time as step:
            >>> Document[:25510:23.976]
+           >>> Document[:22510:Time(43)]
 
            The start and stop value is treated as the frame number. The document will be
            sliced as if time-objects were passed. Step represents the fps.
@@ -399,11 +405,10 @@ class Document(object):
         There are multiple possibilities for slices.
         """
         start, stop, step = slice_obj.start, slice_obj.stop, slice_obj.step
-        if (start is not None and isinstance(slice_obj, (basestring, Time))) or \
-                (stop is not None and isinstance(slice_obj, (basestring, Time))):
-            return self._slice_times(slice_obj)
-        elif isinstance(slice_obj.step, float):
+        if isinstance(slice_obj.step, (float, Time)):
             return self._slice_frames(slice_obj)
+        elif isinstance(slice_obj.start, (basestring, Time)) or isinstance(slice_obj.stop, (basestring, Time)):
+            return self._slice_times(slice_obj)
         else:
             return self._slice_indices(start, stop, step)
 
@@ -420,15 +425,21 @@ class Document(object):
         Slices according to the frame number.
         The step value will always be the fps number.
         """
-        # Retrieve the fps from the viewport.
-        if slice_obj.step <= 0 or slice_obj.step == float("nan"):
-            fps = Viewport().fps
+        # The given step is a float.
+        if not isinstance(slice_obj.step, Time):
+            # Retrieve the fps from the viewport.
+            if slice_obj.step <= 0 or slice_obj.step == float("nan"):
+                fps = Viewport().fps
 
-            if fps is None:
-                raise RuntimeError("The FPS couldn't be retrieved")
+                if fps is None:
+                    raise RuntimeError("The FPS couldn't be retrieved")
 
-        # Calculate the length of each frame.
-        frame_length = 100/slice_obj.step
+            # Calculate the length of each frame.
+            frame_length = 100.0/slice_obj.step
+
+        # The given time instance is a time object.
+        else:
+            frame_length = float(slice_obj.step)
 
         start, stop = None, None
         # Convert start and stop to the actual time.

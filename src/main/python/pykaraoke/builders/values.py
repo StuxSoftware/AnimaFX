@@ -176,4 +176,4 @@ class FunctionValue(Value):
         return Type.frame4frame
 
     def __call__(self, line, type, tag):
-        return ((tag, self.func(line["original"], (float(line["index"])/line["count"]) ** self.accel))),
+        return ((tag, self.func(line, (float(line["index"])/line["count"]) ** self.accel))),

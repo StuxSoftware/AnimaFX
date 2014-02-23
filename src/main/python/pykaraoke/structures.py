@@ -131,7 +131,20 @@ class Syllable(ExtensibleObject):
         return result
 
     def __repr__(self):
-        return "<Syllable start:%d duration:%d text:'%s' extension:%s>" % (self.start, self.duration, self.text, self.extension)
+        return "<Syllable start:%d duration:%d text:'%s' extension:%s>" % (
+            self.start, self.duration, self.text, self.extension
+        )
+
+    @property
+    def rel_start(self):
+        """
+        Returns the relative start time.
+        """
+        return self.start - self.line.start
+
+    @property
+    def rel_end(self):
+        return self.rel_start + self.duration
 
     @property
     def end(self):
