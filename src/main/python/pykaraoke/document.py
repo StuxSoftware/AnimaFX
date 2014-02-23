@@ -259,11 +259,14 @@ class Document(object):
         """
         return self[:]
 
-    def build(self):
+    def build(self, fps=None, prefer_video=True):
         """
         Creates a build out of this document.
         """
-        return DocumentBuilder(self, LineBuffer)
+        builder = DocumentBuilder(self, LineBuffer)
+        builder.fps = fps
+        builder.prefer_video = prefer_video
+        return builder
 
     def _support_line_reading(self):
         """

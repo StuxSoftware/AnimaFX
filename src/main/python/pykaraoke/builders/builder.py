@@ -43,9 +43,11 @@ class Builder(object):
         if parent is not None:
             self.parent.children.append(self)
 
+        self._initialize()
+
     def _initialize(self):
         self.context.tags = []
-        self.context.position = DynamicValue(lambda line: Vector(line["x"], line["y"]))
+        # self.context.position = DynamicValue(lambda line: Vector(line["x"], line["y"]))
 
     def _get_lines(self):
         raise NotImplementedError("Subclasses have to implement the builder.")

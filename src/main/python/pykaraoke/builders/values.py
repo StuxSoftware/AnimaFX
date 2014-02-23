@@ -52,7 +52,7 @@ class OrderedEnum(enum.Enum):
 
 
 class Type(OrderedEnum):
-    __order__ = ["simple", "frame4frame"]
+    __order__ = "simple frame4frame"
 
     simple = 0
     frame4frame = 1
@@ -176,4 +176,4 @@ class FunctionValue(Value):
         return Type.frame4frame
 
     def __call__(self, line, type, tag):
-        return ((tag, self.func(line["original"], (line["index"]/line["count"]) ^ self.accel))),
+        return ((tag, self.func(line["original"], (float(line["index"])/line["count"]) ** self.accel))),

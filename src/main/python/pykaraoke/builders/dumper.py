@@ -36,7 +36,7 @@ def dump_tags(tags):
     for tag_name, value in tags:
         result += "\\" + tag_name
         if isinstance(value, Vector):
-            value = Vector.x, Vector.y
+            value = value.x, value.y
 
         if isinstance(value, (list, tuple)):
             result += "(" + ",".join((str(item) for item in value)) + ")"
