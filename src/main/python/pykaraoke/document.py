@@ -25,10 +25,10 @@
 """
 Represents the input and the output document.
 """
+import math
 import numbers
 
 from styles import StyleManager
-from operations import set_text, set_value, set_extension, retime, filter_lines, frame4frame
 from processors import process as process_lines
 from environment import get_environment
 from structures import Line, Viewport
@@ -114,28 +114,40 @@ class Document(object):
         """
         Sets the text of the lines.
         """
-        return self.annotate(set_text(func))
+        def _set(line):
+            line.text = func(line)
+        return self.annotate(_set)
 
     def set_value(self, name, func):
         """
-        Sets a value of the line.
+        Sets a value of the line. This can either be an extension
+        or a actual value.
         """
-        return self.annotate(set_value(name, func))
+        def _set(line):
+            result = func(line)
 
-    def set_extension(self, func):
-        """
-        Sets a extension function.
-
-        The function returns a tuple (name, value).
-        """
-        return self.annotate(set_extension(func))
+            if hasattr(line, name):
+                setattr(line, name, result)
+            else:
+                line[name] = result
+        return self.annotate(_set)
 
     def retime(self, func):
         """
         Retimes the line. The result of the transformer is a tuple (absolute:bool, new_start:int, new_end:int)
         If new_start or new_end are None, they are ignored.
         """
-        return self.annotate(retime(func))
+        def _set(line):
+            absolute, new_start, new_end = func(line)
+            if absolute:
+                new_start = line.start if new_start is None else new_start
+                new_end = line.end if new_end is None else new_end
+            else:
+                new_start = (0 if new_start is None else new_start) + line.start
+                new_end = (0 if new_end is None else new_end) + line.end
+
+            line.start, line.end = new_start, new_end
+        return self.annotate(_set)
 
     def refactor(self, func):
         """
@@ -159,13 +171,48 @@ class Document(object):
         """
         Filters a line.
         """
-        return self.refactor(filter_lines(func))
+        def _refactor(line):
+            return [line] if func(line) else []
+        return self.refactor(_refactor)
 
     def frames(self, fps=None, prefer_video=False):
         """
-        Creates a frame for frame sub.
+        Creates a frame for frame effect.
         """
-        return self.refactor(frame4frame(fps, prefer_video))
+        environment = get_environment()
+        if fps is None and not environment.video_info_supported:
+            return lambda line: [line]
+
+        if prefer_video and environment.video_info_supported:
+            fps = environment.get_fps()
+
+        duration = 1000.0/fps
+
+        def _refactor(line):
+            result = []
+            cur_time = line.start
+            index = 0
+
+            while cur_time <= line.end:
+                cur_line = line.copy()
+                cur_line.extension = {}
+                cur_line.start = max(line.start, int(math.floor(cur_time)))
+                cur_time += duration
+                cur_line.end = min(int(math.ceil(cur_time)), line.end)
+
+                cur_line["original"] = line
+                cur_line["index"] = index
+
+                result.append(cur_line)
+
+                index += 1
+
+            line_count = len(result)
+            for l in result:
+                l["count"] = line_count
+
+            return result
+        return self.refactor(_refactor)
 
     def syllables(self):
         """
