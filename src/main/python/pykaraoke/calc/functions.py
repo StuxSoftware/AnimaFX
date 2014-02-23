@@ -30,7 +30,7 @@ import math
 
 __author__ = 'StuxCrystal'
 __all__ = [
-    "choose", "bernstein", "beziere"
+    "choose", "bernstein", "bezier"
     "clamp", "interpolate", "interpolate_alpha"
 ]
 
@@ -49,17 +49,16 @@ def bernstein(i, n, t):
     return choose(n, i) * (t**i) * (1-t)**(n-i)
 
 
-def beziere(t, *points):
+def bezier(t, *points):
     """
     Calculates the point on a beziere curve. The result is a vector.
     """
-    cur_point = [0, 0, 0]
+    cur_point = [0, 0]
 
     for i, p in enumerate(points):
-        bern = bernstein(i, len(points), t)
-        for c in range(3):
-            coord = 0 if len(p) <= c else p[c]
-            cur_point[c] += bern * coord
+        bern = bernstein(i, len(points)-1, t)
+        for c in range(2):
+            cur_point[c] += bern * p[c]
 
     return Vector(*cur_point)
 
