@@ -330,7 +330,7 @@ class Document(object):
            >>> Document[start, stop][::step]
 
         2) Float as step:
-           >>> Document[:25510:23.978]
+           >>> Document[:25510:23.976]
 
            The start and stop value is treated as the frame number. The document will be
            sliced as if time-objects were passed. Step represents the fps.
@@ -483,6 +483,12 @@ class Document(object):
 
         # Return the result as a new line-buffer.
         return LineBuffer(result)
+
+    def __len__(self):
+        """
+        Returns the amount of lines in the
+        """
+        return len(self._get_lines())
 
     def __mul__(self, other):
         """
