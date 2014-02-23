@@ -27,6 +27,7 @@ Utility functions for kara-builder.
 """
 __author__ = 'StuxCrystal'
 
+
 class Time(int):
     """
     Represents a time index in ass.
