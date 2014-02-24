@@ -233,7 +233,7 @@ class AffineTransform(tuple):
         if isinstance(other, numbers.Number):
             return self._operation(operator.mul, other, False)
         elif isinstance(other, Vector):
-            data = (other.x, other.y, 1)
+            data = (other.x, other.y, 1.0)
             return Vector(*[sum([data[x] * self[x][y] for y in range(3)]) for x in range(3)][:2])
         elif isinstance(other, AffineTransform):
             return AffineTransform(
