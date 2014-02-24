@@ -36,44 +36,43 @@ __all__ = ["Vector"]
 
 class Vector(tuple):
     """
-    This class represents a three-dimensional vector.
+    This class represents a two-dimensional vector
 
-    >>> Vector(1, 2, 3)
-    <Vector x:1.000000  y:2.000000 z:3.000000>
-    >>> Vector(1, 2)                              # The z-Argument is optional.
-    <Vector x:1.000000  y:2.000000 z:0.000000>
+    >>> Vector(1, 2)
+    <Vector x:1.000000  y:2.000000>
 
     You can add, substract two vectors
-    >>> Vector(1,2,3) + Vector(2,3,4)
-    >>> Vector(5,5,6) - Vector(8,9,5)
+    >>> Vector(1,2) + Vector(2,3)
+    <Vector x:3.000000 y:5.000000>
+    >>> Vector(5,5) - Vector(8,9)
 
     You can multiply and divide a vector with a scalar.
-    >>> Vector(4,5,6) * 7
-    >>> Vector(4,5,6) / 8
+    >>> Vector(4,5) * 7
+    >>> Vector(4,5) / 8
 
     You can calculate the dot-product by multiplying multiple vectors
-    >>> Vector(1,2,3) * Vector(4,5,6)
+    >>> Vector(1,2) * Vector(4,5)
 
     You can negate (or make positive) and a vector
-    >>> -Vector(4,5,9)
-    >>> +Vector(4,5,6)
+    >>> -Vector(4,5)
+    >>> +Vector(4,5)
 
     You can calculate the distance relative to the origin
-    >>> abs(Vector(4,5,6))
+    >>> abs(Vector(4,5))
 
     You can check if the vector is a null-vector or check if two vectors equals each other
     >>> True if Vector(0,0,0) else False
-    >>> Vector(1,2,3) == Vector(4,5,6)
-    >>> Vector(7,8,9) != Vector(7,5,4)
+    >>> Vector(1,2) == Vector(4,5)
+    >>> Vector(7,8) != Vector(7,5)
 
     You can query and unpack each of its components.
-    >>> Vector(1,2,3)[0] == Vector(1,2,3).x
-    >>> Vector(1,2,3)[1] == Vector(1,2,3).y
-    >>> Vector(1,2,3)[2] == Vector(1,2,3).z
-    >>> x, y, z = Vector(1,2,3)
+    >>> Vector(1,2)[0] == Vector(1,2).x
+    >>> Vector(1,2)[1] == Vector(1,2).y
+    >>> Vector(1,2)[2] == Vector(1,2).z
+    >>> x, y, z = Vector(1,3)
 
     You can normalize the vector
-    >>> Vector(5,2,0).normalize()
+    >>> Vector(5,2).normalize()
 
 
     Note that this class is immutable.
@@ -83,17 +82,17 @@ class Vector(tuple):
     # objects.
     __slots__ = []
 
-    def __new__(cls, x, y, z=1):
+    def __new__(cls, x, y):
         """
         Use tuples __new__ method to make sure the values are immutable.
 
         Note that z is 1. Changing this coordinate causes AffineTransform
         to return invalid translation values.
         """
-        return tuple.__new__(cls, (float(x), float(y), float(z)))
+        return tuple.__new__(cls, (float(x), float(y)))
 
     # The components of the vector.
-    x, y, z = [property(operator.itemgetter(i)) for i in range(3)]
+    x, y = [property(operator.itemgetter(i)) for i in range(2)]
 
     def set_length(self, length):
         """
@@ -123,26 +122,26 @@ class Vector(tuple):
         """
         Adds two vectors.
         """
-        return Vector(self.x+other.x, self.y+other.y, self.z+other.z)
+        return Vector(self.x+other.x, self.y+other.y)
 
     def __sub__(self, other):
         """
         Substracts two vectors.
         """
-        return Vector(self.x-other.x, self.y-other.y, self.z-other.z)
+        return Vector(self.x-other.x, self.y-other.y)
 
     def __neg__(self):
         """
         Negates a vector.
         """
-        return Vector(-self.x, -self.y, -self.z)
+        return Vector(-self.x, -self.y)
     __invert__ = __neg__
 
     def __pos__(self):
         """
         Makes a vector positive
         """
-        return Vector(+self.x, +self.y, +self.z)
+        return Vector(+self.x, +self.y)
 
     def __mul__(self, other):
         """
@@ -154,23 +153,23 @@ class Vector(tuple):
         return self._m_scalar(other)
 
     def _m_scalar(self, other):
-        return Vector(self.x*other, self.y*other, self.z*other)
+        return Vector(self.x*other, self.y*other)
 
     def _m_dot(self, other):
-        return self.x*other.x + self.y*other.y + self.z*other.z
+        return self.x*other.x + self.y*other.y
 
     def __div__(self, other):
         """
         Divides a vector with another vector.
         """
-        return Vector(self.x/float(other), self.y/float(other), self.z/float(other))
+        return Vector(self.x/float(other), self.y/float(other))
 
     # Comparison
     def __nonzero__(self):
         """
         Checks if this is not a null vector.
         """
-        return self.x != 0 and self.y != 0 and self.z != 0
+        return self.x != 0 and self.y != 0
 
     def __eq__(self, other):
         """
@@ -184,7 +183,7 @@ class Vector(tuple):
 
     @property
     def length_squared(self):
-        return self.x**2 + self.y**2 + self.z**2
+        return self.x**2 + self.y**2
 
     def get_angle(self, vector):
         """
@@ -194,7 +193,7 @@ class Vector(tuple):
 
     # Representation
     def __repr__(self):
-        return "<Vector x:%f y:%f z:%f>"%self
+        return "<Vector x:%f y:%f z:%f>" % self
 
 
 class AffineTransform(tuple):
@@ -234,7 +233,8 @@ class AffineTransform(tuple):
         if isinstance(other, numbers.Number):
             return self._operation(operator.mul, other, False)
         elif isinstance(other, Vector):
-            return Vector(*[sum([other[x] * self[x][y] for y in range(3)]) for x in range(3)])
+            data = (other.x, other.y, 1)
+            return Vector(*[sum([data[x] * self[x][y] for y in range(3)]) for x in range(3)][:2])
         elif isinstance(other, AffineTransform):
             return AffineTransform(
                 tuple((
@@ -246,7 +246,7 @@ class AffineTransform(tuple):
         raise TypeError("Unsupported operand types '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__))
 
     def __div__(self, other):
-        return self._operation(operator.div, other, False)
+        return self._operation(operator.truediv, other, False)
 
     def __repr__(self):
         return "<AffineTransform %r %r %r>" % self
