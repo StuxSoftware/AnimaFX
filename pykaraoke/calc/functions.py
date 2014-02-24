@@ -64,6 +64,19 @@ def bezier(t, *points):
 
 ###########################################################################################
 # Interpolations
+def _strip_amp_h(string):
+    """
+    Strips &H from the string
+    """
+    if string.startswith("&"):
+        string = string[1:]
+    if string.startswith("H"):
+        string = string[1:]
+    if string.endswith("&"):
+        string = string[:-1]
+    return string
+
+
 def clamp(minimal, value, maximal):
     """
     Clamps the value.
@@ -75,5 +88,23 @@ def interpolate(t, start, end):
     """
     Interpolates the value for the given time.
     """
-    # TODO: Support more types.
+
+    if isinstance(start, str) and isinstance(end, str):
+        start = _strip_amp_h(start)
+        end = _strip_amp_h(end)
+
+        length = len(start)
+        if length != len(end):
+            raise ValueError("start and end have to have the same length.")
+        elif length not in (2, 6):
+            raise ValueError("Invalid hexadecimal type.")
+
+        start = int(start, 16)
+        end = int(start, 16)
+
+        return ("%%0.%df" % length) % interpolate(t, start, end)
+
+    elif isinstance(start, str) or isinstance(end, str):
+        raise ValueError("start and end have to be the same type")
+
     return t*(end-start) + start
