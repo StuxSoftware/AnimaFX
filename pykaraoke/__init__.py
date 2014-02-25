@@ -49,5 +49,5 @@ from .environment import EnvironmentRedefinitionException, UnsupportedOperationE
 from .document import Document, EnvironmentDocument, InputDocument, OutputDocument, LineBuffer
 
 from .images import Image
-from .particle import Particle
+from .particles import Particle
 from .utils import Time

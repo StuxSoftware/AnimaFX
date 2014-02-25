@@ -24,6 +24,9 @@
 from .structures import Line
 from .document import LineBuffer
 
+__all__ = ["Particle"]
+
+
 class Particle(LineBuffer):
     """
     Represents the data of a particle.
