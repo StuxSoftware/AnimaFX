@@ -169,16 +169,47 @@ class DocumentBuilder(Builder):
         return result
 
     def _create_frame4frame(self):
+        if self.context.retime is None:
+            return self._simple_frame4frame()
+        elif self.syllable_build is not None:
+            return self._create_retimed_syl_frame4frame()
+        else:
+            return self._create_retimed_line_frame4frame()
+        
+    def _create_retimed_syl_frame4frame(self):
         result = []
-
+        
+        for line in self.document:
+            buf = self.cls([line.copy()])
+            buf.retime(self.context.retime)
+            
+            for syl in buf.frames(self.fps, self.prefer_video):
+                result.append(self._frame4frame(syl))
+                
+        return result
+                
+    def _create_retimed_line_frame4frame(self):
+        result = []
+        for line in self.document.retime(self.context.retime).frames(self.fps, self.prefer_video):
+            result.append(self._frame4frame(line))
+        return result
+        
+    def _simple_frame4frame(self):
+        result = []
         for line in self.document.frames(self.fps, self.prefer_video):
-            new_line = line.copy()
-            new_line.text = None
+            result.append(self._frames(line))
+        return result
+        
+    def _frame4frame(self, line):
+        new_line = line.copy()
+        new_line.text = None
 
-            text = line.text
+        text = line.text
 
-            tags_line = self._gather_tags(line, Type.frame4frame)
+        tags_line = self._gather_tags(line, Type.frame4frame)
 
+        # Only do this, if the lines are not retimed.
+        if self.context.retime is not None:
             if self.syllable_builder is not None:
                 text = line["syllable"].text
                 sylline = line.copy()
@@ -188,14 +219,9 @@ class DocumentBuilder(Builder):
                 sylline["count"] = line["syl_count"]
                 tags_line += self.syllable_builder._gather_tags(sylline, Type.frame4frame)
 
-            new_line.text = dump_tags(tags_line) + text
+        new_line.text = dump_tags(tags_line) + text
 
-            if self.context.retime is not None:
-                new_line = self.cls([new_line]).retime(self.context.retime)[0]
-
-            result.append(new_line)
-
-        return result
+            
 
 
 class SyllableBuilder(Builder):
