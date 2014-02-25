@@ -163,7 +163,7 @@ class Line(ExtensibleObject):
     Stores the data of the syllable.
     """
 
-    def __init__(self, start, end, style, anchor, margin=(10,10,10), layer=0, text=None, extensions=None):
+    def __init__(self, start, end, style, anchor, margin=(10, 10, 10), layer=0, text=None, extensions=None):
         """
         Creates a new line.
         """
@@ -223,7 +223,7 @@ class Line(ExtensibleObject):
         if isinstance(style, Style):
             return style
 
-        if isinstance(style, basestring):
+        if isinstance(style, str):
             return Style.get_style(style)
         return Style(**style)
 
