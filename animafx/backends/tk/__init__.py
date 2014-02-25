@@ -19,9 +19,9 @@ __author__ = 'StuxCrystal'
 
 __all__ = ["backends"]
 
-from .text_extents import TextExtentBackend
+from .text_extents import TkinterFontBackend
 
 
 backends = (
-    TextExtentBackend,
+    TkinterFontBackend,
 )

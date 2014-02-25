@@ -161,7 +161,9 @@ class Environment(object):
         }
 
     def log(self, level, msg, t, logger):
-        print("[%s][%s][%s] %s" % (logger, logging.getLevelName(level), time.strftime("%X", t), msg), file=sys.stderr)
+        print("[%s][%s][%s] %s" % (
+            logger, logging.getLevelName(level), time.strftime("%X", time.gmtime(t)), msg), file=sys.stderr
+        )
 
     def _get_log_level(self):
         return logging.INFO
@@ -203,6 +205,8 @@ class EmbeddedEnvironment(Environment):
     """
     The default environment uses a module "_karabuilder_environment" that has to be
     provided by the underlying system.
+
+    Please note that all times (except duration) are given in milliseconds.
 
     Each "_environment"-Module has to support at least the following functions:
     | "_environment.name"

@@ -39,4 +39,5 @@ class Singleton(type):
         with Singleton._lock:
             if cls not in Singleton._instances:
                 Singleton._instances[cls] = cls.__new__(*args, **kwargs)
+            print(Singleton._instances[cls])
             return Singleton._instances[cls]

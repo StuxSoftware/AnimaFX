@@ -15,35 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from tkinter import Tk
+"""
+Starter for AnimaFX.
+"""
+import sys
+from animafx import animafx
 
-from animafx.singleton import Singleton
-
-__author__ = 'StuxCrystal'
-
-
-class InternalWindow(object):
-    """
-    Creates an internal window object that cannot be seen by the
-    user.
-    """
-
-    __metaclass__ = Singleton
-
-    def __init__(self):
-        self.window = None
-        self.window_counter = 0
-
-    def __enter__(self):
-        if self.window is None:
-            self.window = Tk()
-            self.window.withdraw()
-
-        return self.window
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        return False
-
-    def __del__(self):
-        if self.window is not None:
-            self.window.destroy()
+if __name__ == "__main__":
+    sys.exit(animafx.AnimaFX.main(sys.argv[1:]))

@@ -20,6 +20,17 @@ Loads ass-documents using python-ass <https://github.com/rfw/python-ass>
 """
 __author__ = 'StuxCrystal'
 
-from .input import PythonAssInputBackend
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    try:
+        import ass
+    except ImportError:
+        pass
+    else:
+        del ass
 
-backends = [PythonAssInputBackend]
+from .input import PythonAssInputBackend
+from .output import PythonAssOutputDocument
+
+backends = [PythonAssInputBackend, PythonAssOutputDocument]

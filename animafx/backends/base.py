@@ -29,7 +29,7 @@ class TextExtentBackend(object):
     def text_extents(self, style, text):
         """
         Calculates the text-extents.
-        style:{font:str, size:int, bold:bool, italic:bool, name:str} text:str
+        <-- style:{font:str, size:int, bold:bool, italic:bool, name:str} text:str
         --> {width:float, height:float, [ascent:float,] [descent:float,] [extlead:float,] [intlead:float,]}
         Note that height is optional if ascent and descent are given.
         """
@@ -72,7 +72,7 @@ class InputDocumentBackend(object):
     def load(self, file):
         """
         Load the file.
-        file:fd
+        <-- file:fd
         """
         raise NotImplementedError
 
@@ -85,13 +85,23 @@ class OutputDocumentBackend(object):
     def write_line(self, line):
         """
         Wrties a line into the document.
-        {style:str, text:str, start:int, end:int, layer:int}
+        <-- {style:str, text:str, start:int, end:int, layer:int}
         """
         raise NotImplementedError
 
-    def dump(self, file):
+    def load(self, infile):
+        """
+        Copies the styles and script-info into the output file
+        <-- infile:fd
+        """
+        raise NotImplementedError
+
+    def dump(self, outfile):
         """
         Dump the output
-        file:fd
+        <-- outfile:fd
+
+        This is needed to move the infile-data and styles to the output
+        file.
         """
         raise NotImplementedError

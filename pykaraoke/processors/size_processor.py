@@ -72,8 +72,8 @@ class BasePositionProcessor(Processor):
 
     def _calculate_space_correction(self, obj, ctx, octx):
         space_correction = 0
-        space_correction += ctx.space_widths[octx.style] * (len(obj.text) - len(obj.text.rstrip()))
-        space_correction -= ctx.space_widths[octx.style] * (len(obj.text) - len(obj.text.lstrip()))
+        space_correction += ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.rstrip()))
+        space_correction -= ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.lstrip()))
 
         octx.space_correction = space_correction
 
@@ -121,8 +121,8 @@ class DefaultPositionProcessor(BasePositionProcessor):
         ctx.linectx = {}
 
         for line in lines:
-            if line.style not in ctx.space_widths:
-                ctx.space_widths[line.style] = line.style.text_extents(" ")["width"]
+            if line.style.name not in ctx.space_widths:
+                ctx.space_widths[line.style.name] = line.style.text_extents(" ")["width"]
             ctx.linectx[line] = ProcessingContext()
             ctx.linectx[line].syllables = {}
 

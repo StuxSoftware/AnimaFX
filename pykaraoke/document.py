@@ -406,7 +406,7 @@ class Document(object):
         start, stop, step = slice_obj.start, slice_obj.stop, slice_obj.step
         if isinstance(slice_obj.step, (float, Time)):
             return self._slice_frames(slice_obj)
-        elif isinstance(slice_obj.start, (str, Time)) or isinstance(slice_obj.stop, (str, Time)):
+        elif isinstance(slice_obj.start, (str, Time)) or isinstance(slice_obj.start, (str, Time)):
             return self._slice_times(slice_obj)
         else:
             return self._slice_indices(start, stop, step)

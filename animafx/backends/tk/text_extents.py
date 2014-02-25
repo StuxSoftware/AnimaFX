@@ -35,7 +35,7 @@ try:
     from tkinter.font import Font
 
 # If not tell the backend manager to ignore this backend.
-except ImportError:
+except ImportError as e:
     TkinterFontBackend = None
 
 # Implement the backend if supported.
@@ -48,30 +48,24 @@ else:
 
     class TkinterFontBackend(TextExtentBackend):
 
-        @lru_cache()
         def text_extents(self, style, text):
             """
             The text extents are calculated using tkinter.Font
             """
             with InternalWindow() as window:
+                font_type = ""
+                if style["bold"]:
+                    font_type += "bold"
+                if style["italic"]:
+                    if len(font_type) > 0:
+                        font_type += " "
+                    font_type += "italic"
+
                 # Create the new font object.
-                font = Font(window, *{
-                    # Copy the name of the font.
-                    "name": style["font"],
-
-                    # Use a pixel sized font.
-                    "size": -style["size"]*FONT_SCALING,
-
-                    # Copy weight.
-                    "weight": ("bold" if style["bold"] else "normal"),
-
-                    # Copy slant.
-                    "slant": ("italic" if style["italic"] else "roman")
-                })
-
+                font = Font(window, (style["font"], -int(style["size"]*FONT_SCALING), font_type))
                 # Query the data
                 width = font.measure(text)
-                metrics = font.metrics('ascent descent linespace')
+                metrics = font.metrics()
 
             return {
                 "width": width / float(FONT_SCALING),

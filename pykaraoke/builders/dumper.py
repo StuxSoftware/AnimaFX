@@ -23,7 +23,7 @@
 #
 from pykaraoke.calc import Vector
 
-from values import Type
+from .values import Type
 
 __author__ = 'StuxCrystal'
 

@@ -292,7 +292,7 @@ class AffineTransform(tuple):
         )
 
     @staticmethod
-    def rotate(rx=0, ry=0, rz=0, p=Vector(0, 0, 1)):
+    def rotate(rx=0, ry=0, rz=0, p=Vector(0, 0)):
         tt = AffineTransform.move(p[0], p[1])
         tf = AffineTransform.move(-p[0], -p[1])
 

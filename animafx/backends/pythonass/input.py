@@ -22,7 +22,7 @@ __author__ = 'StuxCrystal'
 
 # Test if python-ass is available.
 try:
-    import ass
+    import ass.document
 
 # If not, fail.
 except ImportError:
@@ -51,7 +51,7 @@ else:
             Load the document.
             """
             with file:
-                self.document = ass.parse(file)
+                self.document = ass.document.Document.parse_file(file)
 
         def get_viewport_size(self):
             """
@@ -73,45 +73,45 @@ else:
             for style in self.document.styles:
                 data = {
                     "name": style.name,
-                    "font": style.font,
-                    "size": style.size,
+                    "font": style.fontname,
+                    "size": style.fontsize,
                     "bold": style.bold,
                     "italic": style.italic,
                     "spacing": style.spacing
                 }
-                style[style.name] = (data, style.alignment)
+                styles[style.name] = (data, style.alignment)
 
             if "Default" not in styles:
-                styles["Default"] = {
+                styles["Default"] = ({
                     "name": "Default",
                     "font": "Arial",
                     "size": 20,
                     "bold": False,
                     "italic": False,
                     "spacing": 0
-                }
+                }, 2)
 
             result = []
             for line in self.document.events:
                 line_info = []
                 line_data = {
-                    "start": line.start.seconds*1000 + line.start.microseconds//10000,
-                    "end": line.end.seconds*1000 + line.end.microseconds//10000,
+                    "start": line.start.seconds*1000 + line.start.microseconds//1000,
+                    "end": line.end.seconds*1000 + line.end.microseconds//1000,
                     "margin": (line.margin_l, line.margin_r, line.margin_v),
                     "layer": line.layer
                 }
 
                 line_info.append(line_data)
 
-                if line.style in line_data:
+                if line.style in styles:
                     line_data["style"] = styles[line.style][0]
-                    line_data["alignment"] = styles[line.style][1]
+                    line_data["anchor"] = styles[line.style][1]
                 else:
                     line_data["style"] = styles["Default"][0]
-                    line_data["alignment"] = styles["Default"][1]
+                    line_data["anchor"] = styles["Default"][1]
 
                 time = 0
-                for dur, text in KARAOKE.finditer(line.text):
+                for dur, text in (match.groups() for match in KARAOKE.finditer(line.text)):
                     if len(dur) == 0:
                         dur = 0
                     else:
