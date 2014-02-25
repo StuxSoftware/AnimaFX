@@ -35,7 +35,7 @@ __all__ = [
     "Environment",
     "EnvironmentRedefinitionException", "UnsupportedOperationException",
     "Document", "EnvironmentDocument", "InputDocument", "OutputDocument", "LineBuffer",
-    "Image"
+    "Image", "Particle",
     "Time"
 ]
 
@@ -49,4 +49,5 @@ from .environment import EnvironmentRedefinitionException, UnsupportedOperationE
 from .document import Document, EnvironmentDocument, InputDocument, OutputDocument, LineBuffer
 
 from .images import Image
+from .particle import Particle
 from .utils import Time
