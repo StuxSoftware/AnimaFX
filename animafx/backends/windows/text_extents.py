@@ -17,32 +17,14 @@
 #
 __author__ = 'StuxCrystal'
 
-from . import tk, pythonass, windows
-
-__all__ = []
-
-# List of all backends
-_BACKENDS = [
-    windows.backends, tk.backends,            # Prefer platform specific font info calculations
-    pythonass.backends                        # Prefer libraries over internal implementations
-]
+from animafx.backends.base import TextExtentBackend
+from animafx.backends.windows.win32query import calculate_text_extents
 
 
-def register_backend(backend):
+class GDI32Backend(TextExtentBackend):
     """
-    Registers a new backend-provider.
+    This class uses gdi32 to calculate the text-extents.
     """
-    _BACKENDS.insert(0, backend)
 
-
-def get_backend(cls):
-    """
-    Returns the first working backend-provider (iterable)
-    """
-    for backend in _BACKENDS:
-        for impl in backend:
-            if impl is None:
-                continue
-
-            if issubclass(impl, cls):
-                return impl()
+    def text_extents(self, style, text):
+        return calculate_text_extents(style, text)

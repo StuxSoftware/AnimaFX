@@ -58,7 +58,6 @@ class SizeProcessor(Processor):
         self._register_optional_value(obj, extents, "descent")        # Descent
         self._register_optional_value(obj, extents, "extlead")        # External Leading
         self._register_optional_value(obj, extents, "intlead")        # Internal Leading
-        self._register_optional_value(obj, extents, "advance")        # Calculates the advance.
 
     def _register_optional_value(self, obj, extents, name):
         """
@@ -71,11 +70,11 @@ class SizeProcessor(Processor):
 class BasePositionProcessor(Processor):
 
     def _calculate_space_correction(self, obj, ctx, octx):
-        space_correction = 0
-        space_correction += ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.rstrip()))
-        space_correction -= ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.lstrip()))
+        r_spaces = ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.rstrip()))
+        l_spaces = ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.lstrip()))
 
-        octx.space_correction = space_correction
+        octx.space_correction = l_spaces
+        octx.spaceless_width = obj["width"] - r_spaces - l_spaces
 
     def _calculate_top_left(self, obj, ctx, octx):
         if octx.anchor in (7, 8, 9):
@@ -98,15 +97,16 @@ class BasePositionProcessor(Processor):
             obj["left"] = ctx.resolution[0] - obj["width"] - octx.margin[1]
             octx.anchor_x = "right"
 
-        obj["left"] -= octx.space_correction
-
     def _calculate_points(self, obj, octx):
+        # print(repr(obj.text), obj["left"], octx.space_correction)
+        obj["left"] += octx.space_correction
+
         obj["middle"] = obj["top"] + obj["height"]/2
         obj["bottom"] = obj["top"] + obj["height"]
         obj["y"] = obj[octx.anchor_y]
 
-        obj["center"] = obj["left"] + (obj["width"] - octx.space_correction)/2
-        obj["right"] = obj["left"] + (obj["width"] - octx.space_correction)
+        obj["center"] = obj["left"] + octx.spaceless_width/2
+        obj["right"] = obj["left"] + octx.spaceless_width
         obj["x"] = obj[octx.anchor_x]
 
 

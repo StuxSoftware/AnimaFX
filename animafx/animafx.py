@@ -21,6 +21,7 @@ import traceback
 
 import argparse
 
+from .console import CodeHandler
 from .environment import AnimaFXEnvironment
 from .singleton import Singleton
 __author__ = 'StuxCrystal'
@@ -45,57 +46,36 @@ class AnimaFX(object):
 
     def run(self):
         self.start()
-        if self.execfile():
+        if self.script_handler.execute():
             self.stop()
 
     def start(self):
         self.environment = AnimaFXEnvironment(self)
         self.environment.feed(self.instream)
 
+        self.script_handler = CodeHandler.get_handler(self.script)
+
     def stop(self):
         self.environment.dump(self.outstream)
 
-    def execfile(self):
-        # Try to detect the encoding for you.
-        with open(self.script, 'rb') as file:
-            try:
-                encoding = tokenize.detect_encoding(file.readline)[0]
-            except SyntaxError:
-                encoding = "utf-8"
 
-        # Set the global values for the module.
-        global_values = {
-            '__file__': self.script,       # Use actual filename of the script.
-            '__name__': '__main__'         # Make sure that 'if __name__ == "__main__"'-hook works
-        }
-
-        with open(self.script, 'r', encoding=encoding) as file:
-            # Do not inherit any 'from future import ...'-statements that may be used
-            # by AnimaFX.
-            # Additionally set the current filename.
-            module = compile(file.read(), self.script, 'exec', False)
-
-        try:
-            exec(module, global_values)
-        # Reraise any occuring exceptions
-        except (SystemExit, KeyboardInterrupt) as e:
-            raise e
-
-        # Print the exception
-        # except BaseException as e:
-        #     traceback.print_exception(e.__class__, e, e.__traceback__)
-        #     return False
-
-        return True
 
     @classmethod
-    def main(cls, args = ("animafx.py",)):
+    def main(cls, args=("animafx.py",)):
+        """
+        Usage: animafx.py (-s <File> | --script=<File>)
+                          [(-i <Input> | --input=<Input>)] [(-o <Output> | --output=<Output>)]
+               animafx.py [(-s <File> | --script=<File>)]
+                          (-i <Input> | --input=<Input>) [(-o <Output> | --output=<Output>)]
+               animefx.py (--help | -h)
+        """
+
         parser = argparse.ArgumentParser(
             description="Free, Open-Source and Platform-Independent Karaoke-FX Generator.",
             epilog="Be independent."
         )
 
-        parser.add_argument("-s", "--script", help="The script", required=True, type=str)
+        parser.add_argument("-s", "--script", help="The script", type=str, default=None)
         parser.add_argument("-i", "--input", help="The input file", type=argparse.FileType("rb"), default=sys.stdin)
         parser.add_argument("-o", "--output", help="The output file", type=argparse.FileType("w"), default=sys.stdout)
 

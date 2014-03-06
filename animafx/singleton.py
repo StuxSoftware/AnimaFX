@@ -38,6 +38,11 @@ class Singleton(type):
         """
         with Singleton._lock:
             if cls not in Singleton._instances:
-                Singleton._instances[cls] = cls.__new__(*args, **kwargs)
-            print(Singleton._instances[cls])
+                Singleton._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
             return Singleton._instances[cls]
+
+
+def singleton(base=object):
+    class Base(base, metaclass=Singleton):
+        pass
+    return Base

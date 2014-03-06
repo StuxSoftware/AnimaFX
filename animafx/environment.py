@@ -25,22 +25,17 @@ from pykaraoke.environment import Environment, set_environment
 
 from .backends import get_backend
 from .backends.base import TextExtentBackend, InputDocumentBackend, OutputDocumentBackend
-from .singleton import Singleton
+from .singleton import singleton
 
 from .version import __version__ as _version
 
 __all__ = ["AnimaFXEnvironment"]
 
 
-class AnimaFXEnvironment(Environment):
+class AnimaFXEnvironment(singleton(Environment)):
     """
     Implementation of the anima-fx environment
     """
-
-    # This class is actually a singleton so
-    # prevent it from be reinstantiated.
-    __metaclass__ = Singleton
-
     def __init__(self, animafx=None):
         """
         Registers the backend-values.
@@ -129,4 +124,5 @@ class AnimaFXEnvironment(Environment):
         """
         Registers the environment and returns the newly created environment.
         """
+        # print("Registering: ", self)
         set_environment(self)

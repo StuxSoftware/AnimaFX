@@ -17,32 +17,16 @@
 #
 __author__ = 'StuxCrystal'
 
-from . import tk, pythonass, windows
+__all__ = ["backends"]
 
-__all__ = []
+import platform
 
-# List of all backends
-_BACKENDS = [
-    windows.backends, tk.backends,            # Prefer platform specific font info calculations
-    pythonass.backends                        # Prefer libraries over internal implementations
-]
+#
+# Do not import anything if the current platform is not windows.
+#
+if not platform.platform(aliased=True).startswith("Windows"):
+    backends = []
 
-
-def register_backend(backend):
-    """
-    Registers a new backend-provider.
-    """
-    _BACKENDS.insert(0, backend)
-
-
-def get_backend(cls):
-    """
-    Returns the first working backend-provider (iterable)
-    """
-    for backend in _BACKENDS:
-        for impl in backend:
-            if impl is None:
-                continue
-
-            if issubclass(impl, cls):
-                return impl()
+else:
+    from animafx.backends.windows.text_extents import GDI32Backend
+    backends = [GDI32Backend]

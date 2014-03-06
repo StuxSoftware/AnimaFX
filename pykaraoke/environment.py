@@ -302,7 +302,7 @@ class EmbeddedEnvironment(Environment):
         try:
             import _karabuilder_environment
         except ImportError:
-            raise UnsupportedOperationException("The underlying software does not seem to support PyKaraoke.")
+            raise UnsupportedOperationException("The underlying software does not seem to support PyKaraoke.") from None
 
         self.module = _karabuilder_environment
         Environment.__init__(self, self.module.support, self.module.attributes)

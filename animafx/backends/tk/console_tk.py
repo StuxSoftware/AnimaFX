@@ -17,18 +17,16 @@
 #
 from tkinter import Tk
 
-from animafx.singleton import Singleton
+from animafx.singleton import singleton
 
 __author__ = 'StuxCrystal'
 
 
-class InternalWindow(object):
+class InternalWindow(singleton()):
     """
-    Creates an internal window object that cannot be seen by the
-    user.
+    Creates an internal window object that cannot be seen by the user.
+    Note that this implementation may be very slow.
     """
-
-    __metaclass__ = Singleton
 
     def __init__(self):
         self.window = None
