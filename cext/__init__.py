@@ -29,11 +29,10 @@ CExt is aimed to provide a framework encouraging cleaner wrappers for c-library 
 """
 __author__ = 'StuxCrystal'
 
-from cext.libraries import CFunction, CObject, SharedLibrary
+from cext.libraries import CFunction, CObject, PyCallback, SharedLibrary
 from cext.structures import Structure, Union
 
-
 __all__ = [
-    "CObject", "CFunction", "SharedLibrary",
+    "CObject", "CFunction", "PyCallback", "SharedLibrary",
     "Structure", "Union"
 ]
