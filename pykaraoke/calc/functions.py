@@ -100,9 +100,9 @@ def interpolate(t, start, end):
             raise ValueError("Invalid hexadecimal type.")
 
         start = int(start, 16)
-        end = int(start, 16)
+        end = int(end, 16)
 
-        return ("%%0.%df" % length) % interpolate(t, start, end)
+        return ("&H%%0%dX&" % length) % int(interpolate(t, start, end))
 
     elif isinstance(start, str) or isinstance(end, str):
         raise ValueError("start and end have to be the same type")
