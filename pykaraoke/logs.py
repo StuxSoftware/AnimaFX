@@ -26,7 +26,7 @@ Provides features for logging.
 """
 import logging
 
-from .environment import get_environment
+from pykaraoke.environment import get_environment
 
 __author__ = 'StuxCrystal'
 __all__ = ["EnvironmentHandler", "get_logger"]

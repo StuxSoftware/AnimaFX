@@ -30,6 +30,7 @@ from pykaraoke.document.base import Document, LineBuffer
 from pykaraoke.document.environment import EnvironmentDocument
 from pykaraoke.document.environment import InputDocument, OutputDocument
 from pykaraoke.document.particles import Particle
+from pykaraoke.document.images import Image
 
 __all__ = [
     "Document", "LineBuffer",

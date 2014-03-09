@@ -24,7 +24,7 @@
 """
 Contains linking processors.
 """
-from .base import ProcessingContext, Processor
+from pykaraoke.processors.base import ProcessingContext, Processor
 
 __author__ = 'StuxCrystal'
 

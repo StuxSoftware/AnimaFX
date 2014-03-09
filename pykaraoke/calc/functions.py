@@ -25,7 +25,7 @@
 """
 Implementation of a beziere-curve.
 """
-from .graphics import Vector
+from pykaraoke.calc.graphics import Vector
 import math
 
 __author__ = 'StuxCrystal'

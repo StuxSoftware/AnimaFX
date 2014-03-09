@@ -25,9 +25,9 @@
 """
 Returns common types of karabuilder.
 """
-from .utils import to_ass_time
-from .styles import StyleManager, Style
-from .environment import get_environment
+from pykaraoke.utils import to_ass_time
+from pykaraoke.styles import StyleManager, Style
+from pykaraoke.environment import get_environment
 
 __author__ = 'StuxCrystal'
 

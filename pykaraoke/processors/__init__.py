@@ -36,11 +36,13 @@ __all__ = [
     "process"
 ]
 
-from .base import Processor, ProcessingContext
-from .index_processor import IndexProcessor, CountProcessor, LinkingProcessor
-from .timing_processor import FadeTimingProcessor
-from .size_processor import SizeProcessor, PositionProcessor
-from .multi_processor import SelectiveProcessor
+from pykaraoke.processors.base import Processor, ProcessingContext
+from pykaraoke.processors.index_processor import IndexProcessor, CountProcessor
+from pykaraoke.processors.index_processor import LinkingProcessor
+from pykaraoke.processors.timing_processor import FadeTimingProcessor
+from pykaraoke.processors.size_processor import SizeProcessor
+from pykaraoke.processors.size_processor import PositionProcessor
+from pykaraoke.processors.multi_processor import SelectiveProcessor
 
 # Use this "class".
 BaseProcessor = lambda: SelectiveProcessor((SizeProcessor, PositionProcessor), None)

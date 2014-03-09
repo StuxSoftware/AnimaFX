@@ -29,7 +29,7 @@ import sys
 import time
 import logging
 
-from .utils import to_ass_time
+from pykaraoke.utils import to_ass_time
 
 
 __author__ = 'StuxCrystal'

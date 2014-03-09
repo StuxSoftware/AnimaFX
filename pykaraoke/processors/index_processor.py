@@ -25,7 +25,7 @@
 """
 Processors for indexing.
 """
-from .base import Processor
+from pykaraoke.processors.base import Processor
 __author__ = 'StuxCrystal'
 
 

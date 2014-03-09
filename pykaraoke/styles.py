@@ -23,7 +23,7 @@
 #
 from functools import lru_cache
 
-from .environment import get_environment
+from pykaraoke.environment import get_environment
 
 __author__ = 'StuxCrystal'
 __all__ = ["StyleManager"]
@@ -51,8 +51,8 @@ class Style(object):
         environment = get_environment()
 
         # If the environment does support styles,
-        # check if the meta-data equals each other and if so, let the environment calculate
-        # the values using the name of the style only.
+        # check if the meta-data equals each other and if so, let the
+        # environment calculate the values using the name of the style only.
         if environment.styles_supported:
             orig = Style.get_style(self.name)
 

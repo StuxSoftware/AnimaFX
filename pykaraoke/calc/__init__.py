@@ -27,9 +27,9 @@ Provides useful functions for mathematics
 """
 __author__ = 'StuxCrystal'
 
-from .functions import bezier
-from .functions import clamp, interpolate
-from .graphics import Vector, AffineTransform
+from pykaraoke.calc.functions import bezier
+from pykaraoke.calc.functions import clamp, interpolate
+from pykaraoke.calc.graphics import Vector, AffineTransform
 
 __all__ = [
     "bezier",

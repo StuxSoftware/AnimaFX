@@ -25,9 +25,9 @@
 """
 Contains processors for sizes and placements.
 """
-from ..structures import Viewport
-from .base import ProcessingContext, Processor
-from .multi_processor import SelectiveProcessor
+from pykaraoke.structures import Viewport
+from pykaraoke.processors.base import ProcessingContext, Processor
+from pykaraoke.processors.multi_processor import SelectiveProcessor
 
 __author__ = 'StuxCrystal'
 
