@@ -24,12 +24,12 @@
 """
 Class to support images.
 """
-from .logs import get_internal_logger
-from .calc.graphics import AffineTransform, Vector
-from .calc.functions import clamp
-from .environment import get_environment
-from .structures import Line
-from .document.base import Document
+from pykaraoke.logs import get_internal_logger
+from pykaraoke.calc.graphics import AffineTransform, Vector
+from pykaraoke.calc.functions import clamp
+from pykaraoke.environment import get_environment
+from pykaraoke.structures import Line
+from pykaraoke.document.base import Document
 
 __author__ = 'StuxCrystal'
 
