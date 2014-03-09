@@ -46,7 +46,8 @@ class FadeTimingProcessor(Processor):
                 line_before = line
                 continue
 
-            line["infade"] = line_before["outfade"] = line.start - line_before.end
+            time = line.start - line_before.end
+            line["infade"] = line_before["outfade"] = time
             line_before = line
 
         if line_before is not None:

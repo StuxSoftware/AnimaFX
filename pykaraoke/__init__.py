@@ -28,13 +28,12 @@ any environment that is capable of using "TextExtents".
 """
 __author__ = 'StuxCrystal'
 
-from pykaraoke.styles import StyleManager
-from pykaraoke.structures import Style, Line, Syllable, Viewport
+from pykaraoke.core.structures.structures import Style, Line, Syllable, Viewport
 
-from pykaraoke.environment import get_environment, set_environment
-from pykaraoke.environment import Environment
-from pykaraoke.environment import EnvironmentRedefinitionException
-from pykaraoke.environment import UnsupportedOperationException
+from pykaraoke.core.environment import get_environment, set_environment
+from pykaraoke.core.environment import Environment
+from pykaraoke.core.environment import EnvironmentRedefinitionException
+from pykaraoke.core.environment import UnsupportedOperationException
 
 from pykaraoke.document import Document
 from pykaraoke.document import InputDocument, OutputDocument, LineBuffer

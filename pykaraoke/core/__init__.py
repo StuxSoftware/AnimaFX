@@ -21,18 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from pykaraoke.core.structures.structures import Line
-from pykaraoke.document.base import LineBuffer
-
-__all__ = ["Particle"]
-
-
-class Particle(LineBuffer):
-    """
-    Represents the data of a particle.
-    """
-    
-    def __init__(self, code):
-        super(Particle, self).__init__([
-            Line(0, 0, None, 5, (10,10,10), 0, code)
-        ])
+"""
+The actual core of the library.
+"""
+__author__ = 'StuxCrystal'

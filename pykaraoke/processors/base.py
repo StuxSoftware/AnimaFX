@@ -55,7 +55,9 @@ class ProcessingContext(object):
 
     def __repr__(self):
         return "<PreprocessingContext " + ", ".join(
-            ["%s:%r" % (key, value) for key, value in object.__getattribute__(self, "data").items()]
+            ["%s:%r" % (key, value) for key, value in object.__getattribute__(
+                self, "data"
+            ).items()]
         ) + ">"
 
 
@@ -84,7 +86,8 @@ class Processor(object):
         Called before the processor actually processes the lines.
         Useful if you want to retrieve some statistics about the lines.
 
-        Use "ctx" to store temporary values that should be shipped across the processing steps.
+        Use "ctx" to store temporary values that should be shipped across the
+        processing steps.
         """
         pass
 
@@ -92,7 +95,8 @@ class Processor(object):
         """
         Processes the lines.
 
-        Usually "ctx" will contains data that are calculated during pre-processing state.
+        Usually "ctx" will contains data that are calculated during
+        pre-processing state.
         """
         pass
 

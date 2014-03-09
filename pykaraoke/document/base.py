@@ -29,8 +29,8 @@ __author__ = 'StuxCrystal'
 import math
 
 from pykaraoke.utils import Time, from_ass_time
-from pykaraoke.environment import get_environment
-from pykaraoke.structures import Viewport, Line
+from pykaraoke.core.environment import get_environment
+from pykaraoke.core.structures.structures import Viewport, Line
 from pykaraoke.processors import process as process_lines
 
 __all__ = [
@@ -129,7 +129,8 @@ class Document(object):
 
     def retime(self, func):
         """
-        Retimes the line. The result of the transformer is a tuple (absolute:bool, new_start:int, new_end:int)
+        Retimes the line. The result of the transformer is a tuple
+        (absolute:bool, new_start:int, new_end:int)
         If new_start or new_end are None, they are ignored.
         """
         def _set(line):
@@ -349,8 +350,8 @@ class Document(object):
            >>> Document['0:22:30.00':'0:22:40.00':]
            >>> Document[:Time('0:22:30.35')]
 
-           Any slice index can be none as long start or stop is either a string or a
-           time object.
+           Any slice index can be none as long start or stop is either a string
+           or a time object.
 
            The times are clamped for the lines and syllables.
            Any syllable that would be outside the time range will be dropped.
@@ -362,14 +363,15 @@ class Document(object):
            >>> Document[:25510:23.976]
            >>> Document[:22510:Time(43)]
 
-           The start and stop value is treated as the frame number. The document will be
-           sliced as if time-objects were passed. Step represents the fps.
+           The start and stop value is treated as the frame number.
+           The document will be sliced as if time-objects were passed.
+           Step represents the fps.
 
-           If start and/or stop is a string or a time-object, they will be used as
-           time.
+           If start and/or stop is a string or a time-object, they will be
+           used as time.
 
-           If step is smaller than 0 or "NaN", the fps passed by the environment will be
-           used.
+           If step is smaller than 0 or "NaN", the fps passed by the
+           environment will be used.
 
         3) Anything other
            >>> Document[::]
@@ -392,7 +394,8 @@ class Document(object):
         start, stop, step = slice_obj.start, slice_obj.stop, slice_obj.step
         if isinstance(slice_obj.step, (float, Time)):
             return self._slice_frames(slice_obj)
-        elif isinstance(slice_obj.start, (str, Time)) or isinstance(slice_obj.start, (str, Time)):
+        elif isinstance(slice_obj.start, (str, Time)) or \
+                isinstance(slice_obj.start, (str, Time)):
             return self._slice_times(slice_obj)
         else:
             return self._slice_indices(start, stop, step)

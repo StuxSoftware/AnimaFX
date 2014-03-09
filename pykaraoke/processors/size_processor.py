@@ -25,7 +25,7 @@
 """
 Contains processors for sizes and placements.
 """
-from pykaraoke.structures import Viewport
+from pykaraoke.core.structures.structures import Viewport
 from pykaraoke.processors.base import ProcessingContext, Processor
 from pykaraoke.processors.multi_processor import SelectiveProcessor
 
@@ -54,10 +54,10 @@ class SizeProcessor(Processor):
         # Adds basic objects.
         obj["width"], obj["height"] = extents["width"], extents["height"]
 
-        self._register_optional_value(obj, extents, "ascent")         # Ascent
-        self._register_optional_value(obj, extents, "descent")        # Descent
-        self._register_optional_value(obj, extents, "extlead")        # External Leading
-        self._register_optional_value(obj, extents, "intlead")        # Internal Leading
+        self._register_optional_value(obj, extents, "ascent")   # Ascent
+        self._register_optional_value(obj, extents, "descent")  # Descent
+        self._register_optional_value(obj, extents, "extlead")  # Ext. Leading
+        self._register_optional_value(obj, extents, "intlead")  # Int. Leading
 
     def _register_optional_value(self, obj, extents, name):
         """
@@ -70,8 +70,9 @@ class SizeProcessor(Processor):
 class BasePositionProcessor(Processor):
 
     def _calculate_space_correction(self, obj, ctx, octx):
-        r_spaces = ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.rstrip()))
-        l_spaces = ctx.space_widths[octx.style.name] * (len(obj.text) - len(obj.text.lstrip()))
+        width = ctx.space_widths[octx.style.name]
+        r_spaces = width * (len(obj.text) - len(obj.text.rstrip()))
+        l_spaces = width * (len(obj.text) - len(obj.text.lstrip()))
 
         octx.space_correction = l_spaces
         octx.spaceless_width = obj["width"] - r_spaces - l_spaces
@@ -122,7 +123,8 @@ class DefaultPositionProcessor(BasePositionProcessor):
 
         for line in lines:
             if line.style.name not in ctx.space_widths:
-                ctx.space_widths[line.style.name] = line.style.text_extents(" ")["width"]
+                ctx.space_widths[line.style.name] = \
+                    line.style.text_extents(" ")["width"]
             ctx.linectx[line] = ProcessingContext()
             ctx.linectx[line].syllables = {}
 
@@ -227,9 +229,12 @@ class KanjiPositionProcessor(BasePositionProcessor):
                 sctx.anchor = line.anchor
                 sctx.margin = line.margin
                 sctx.style = line.style
-                sctx.width = line.style.text_extents(syllable.text.strip())["width"]
+                sctx.width = line.style.text_extents(
+                    syllable.text.strip()
+                )["width"]
                 sctx.space_correction = 0
-                sctx.anchor_x, sctx.anchor_y = ctx.linectx[line].anchor_x, ctx.linectx[line].anchor_y
+                sctx.anchor_x = ctx.linectx[line].anchor_x
+                sctx.anchor_y = ctx.linectx[line].anchor_y
 
                 if "intlead" in syllable and not empty:
                     pos += syllable["intlead"]
@@ -248,11 +253,17 @@ class KanjiPositionProcessor(BasePositionProcessor):
 class PositionProcessor(SelectiveProcessor):
 
     def __init__(self, kanji_alignments=(1, 4, 7, 3, 6, 9)):
-        SelectiveProcessor.__init__(self, (DefaultPositionProcessor, KanjiPositionProcessor), None)
+        SelectiveProcessor.__init__(self, (
+            DefaultPositionProcessor, KanjiPositionProcessor
+        ), None)
         self.kanji_alignments = kanji_alignments
 
     def _select(self, processor, line, ctx):
         return isinstance(
             processor,
-            (KanjiPositionProcessor if line.anchor in self.kanji_alignments else DefaultPositionProcessor)
+            (
+                KanjiPositionProcessor
+                if line.anchor in self.kanji_alignments
+                else DefaultPositionProcessor
+            )
         )

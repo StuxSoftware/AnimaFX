@@ -106,10 +106,13 @@ class Environment(object):
                 width = self._text_extents(style, "")["width"]
             extents["width"] = width
 
-        # Calculate the height manually if they are not provided by the environment.
+        # Calculate the height manually if they are not provided
+        # by the environment.
         if "height" not in extents:
             if "ascent" not in extents or "descent" not in extents:
-                raise UnsupportedOperationException("Text-Extents not implemented correctly.")
+                raise UnsupportedOperationException(
+                    "Text-Extents not implemented correctly."
+                )
             extents["height"] = extents["ascent"] + extents["descent"]
 
         return extents
@@ -143,7 +146,8 @@ class Environment(object):
             "mv": line.margin[2]
         }
 
-        print("Dialogue: %(layer)i,%(start)s,%(end)s,%(style)s,,%(ml)d,%(mr)d,%(mv)d,,%(text)s" % data)
+        print("Dialogue: %(layer)i,%(start)s,%(end)s,"
+              "%(style)s,,%(ml)d,%(mr)d,%(mv)d,,%(text)s" % data)
 
     def get_fps(self):
         return None
@@ -161,8 +165,12 @@ class Environment(object):
         }
 
     def log(self, level, msg, t, logger):
-        print("[%s][%s][%s] %s" % (
-            logger, logging.getLevelName(level), time.strftime("%X", time.gmtime(t)), msg), file=sys.stderr
+        print(
+            "[%s][%s][%s] %s" % (
+                logger, logging.getLevelName(level),
+                time.strftime("%X", time.gmtime(t)), msg
+            ),
+            file=sys.stderr
         )
 
     def _get_log_level(self):
@@ -203,8 +211,8 @@ class Environment(object):
 
 class EmbeddedEnvironment(Environment):
     """
-    The default environment uses a module "_karabuilder_environment" that has to be
-    provided by the underlying system.
+    The default environment uses a module "_karabuilder_environment" that has
+    to be provided by the underlying system.
 
     Please note that all times (except duration) are given in milliseconds.
 
@@ -213,43 +221,54 @@ class EmbeddedEnvironment(Environment):
     | | The name of the environment.
     |
     | "_environment.support"
-    | | This attribute is a tuple of strings containing of all supported extensions to pykaraoke.
+    | | This attribute is a tuple of strings containing of all supported
+    | | extensions to pykaraoke.
     | | These strings are currently supported
     | | > "images"  : If the environments supports images.
     | | > "styles"  : Supports styles.
-    | | > "output"  : Uses an external output file. (That means that kara-build will not write into stdout.)
-    | | > "vinfo"   : If the environment has meta-data about the video (e.g. fps)
+    | | > "output"  : Uses an external output file.
+    | |               (That means that kara-build will not write into stdout.)
+    | | > "vinfo"   : If the environment has meta-data about the video
+    | |               (e.g. fps)
     | | > "logging" : If the environment supports logging.
     |
     | "_environment.attributes"
-    | | This attribute is a tuple of strings containing all flags of the environment. This can either be
-    | | bugs that PyKaraoke can work around with or specific properties of some callback functions.
-    | | > "stylemgr"       : This environment has its own style manager. Use "environment.stylemanager"
-    | |                      to get the style manager.
+    | | This attribute is a tuple of strings containing all flags of the
+    | | environment. This can either be bugs that PyKaraoke can work around
+    | | with or specific properties of some callback functions.
+    | | > "stylemgr"       : This environment has its own style manager.
+    | |                      Use "environment.stylemanager" to get the style
+    | |                      manager.
     | |                      (Only supported in non embedded environments)
     |
-    | "_environment.text_extents(dict[font=None, size=0, bold=False, italic=False] or stylename, str:text)
+    | "_environment.text_extents(
+    |      dict[font=None, size=0, bold=False, italic=False] or stylename,
+    |      str:text
+    | )
     | | Returns the boundary of the given string. (type: dict)
     | | Keys:
     | | > "width", "height" (required)
     | |   The size of the string.
     | | > "ascend", "descent" (both are optional)
     | |   The ascent and descent.
-    | | > "extlead", "intlead" (both are optional) (The leading <external and internal> of the text)
+    | | > "extlead", "intlead" (both are optional)
+    | |   (The leading <external and internal> of the text)
     | |   The leading of the line.
     | | > "advance" (optional) [only for each char]
-    | |   The amount of pixels where the environment would set the next character.
+    | |   The amount of pixels where the environment would set the next
+    | |   character.
     |
     | "_environment.get_syllables()"
     | | Returns a two dimensional array of syllables.
-    | | Each array inside the list represents each line. The first element of the array are metadata about
-    | | the line.
+    | | Each array inside the list represents each line. The first element o
+    | | the array are metadata about the line.
     | |
     | | The function may be called multiple times.
     | |
     | | The metadata about the line.
     | | > {"start":int, "end":int,
-    | |    "style":{font:str, size:int, bold:bool, italic:bool, name:str} or Style-Name (if styles are supported),
+    | |    "style":{font:str, size:int, bold:bool, italic:bool, name:str} or
+    | |            Style-Name (if styles are supported),
     | |    "anchor": ASS-Anchor-Integer value.,
     | |    "margin": (l,r,v),
     | |    "layer":int
@@ -259,7 +278,8 @@ class EmbeddedEnvironment(Environment):
     | | > {"start":int (relative to line start), "duration":int, "text":str}
     |
     | "_environment.get_viewport_size()"
-    | | Returns an array (width, height) with the size of the viewport (aka. X-Resoultion and Y-Resolution)
+    | | Returns an array (width, height) with the size of the viewport
+    | | (aka. X-Resoultion and Y-Resolution)
 
     If "images" is in "_environment.support()"
     | "_environment.get_image(str:filename)"
@@ -270,15 +290,21 @@ class EmbeddedEnvironment(Environment):
     If "styles" is in "_environment.support()"
     | "_environment.get_style(str:stylename)
     | | Returns a dict with these types:
-    | | > {"font":str, "size":int, "bold":boolean, "italic":boolean, ["spacing":int=0]}
+    | | > {
+    | |     "font":str, "size":int, "bold":boolean,
+    | |     "italic":boolean, ["spacing":int=0]
+    | |   }
     |
     | "_environment.get_styles()"
-    | | Returns a dict with the style name as key and another dictionary with the format
+    | | Returns a dict with the style name as key and another dictionary
+    | | with the format
     | | > {"font":str, "size":int, "bold":boolean, "italic":boolean}
     | | as value.
 
     If "output" is in "_environment.support()"
-    | "_environment.write_line(str/dict for style, str:text, int:start, int:end, int:layer)"
+    | "_environment.write_line(
+    |     str/dict for style, str:text, int:start, int:end, int:layer
+    | )"
     | | Writes a new line into the output.
 
     If "vinfo" is in "_environment.support()"
@@ -302,7 +328,9 @@ class EmbeddedEnvironment(Environment):
         try:
             import _karabuilder_environment
         except ImportError:
-            raise UnsupportedOperationException("The underlying software does not seem to support PyKaraoke.") from None
+            raise UnsupportedOperationException(
+                "The underlying software does not seem to support PyKaraoke."
+            ) from None
 
         self.module = _karabuilder_environment
         Environment.__init__(self, self.module.support, self.module.attributes)
@@ -312,7 +340,9 @@ class EmbeddedEnvironment(Environment):
         Returns the boundary of the text.
         """
         if isinstance(style, str) and "styles" not in self.support:
-            raise UnsupportedOperationException("Styles are not supported by the environment.")
+            raise UnsupportedOperationException(
+                "Styles are not supported by the environment."
+            )
         return self.module.text_extents(style, text)
 
     def get_syllables(self):
@@ -328,7 +358,9 @@ class EmbeddedEnvironment(Environment):
         May not be supported by the environment
         """
         if "images" not in self.support:
-            raise UnsupportedOperationException("Images are not supported by the environment.")
+            raise UnsupportedOperationException(
+                "Images are not supported by the environment."
+            )
         return self.module.get_image(filename)
 
     def get_style(self, name):
@@ -338,7 +370,9 @@ class EmbeddedEnvironment(Environment):
         May not be supported by the environment.
         """
         if "styles" not in self.support:
-            raise UnsupportedOperationException("Styles are not supported by the environment.")
+            raise UnsupportedOperationException(
+                "Styles are not supported by the environment."
+            )
 
         return self.module.get_style(name)
 
@@ -349,7 +383,9 @@ class EmbeddedEnvironment(Environment):
         May not be supported by the environment.
         """
         if "styles" not in self.support:
-            raise UnsupportedOperationException("Styles are not supported by the environment.")
+            raise UnsupportedOperationException(
+                "Styles are not supported by the environment."
+            )
 
         return self.module.get_styles()
 
@@ -374,7 +410,9 @@ class EmbeddedEnvironment(Environment):
                     "italic": line.style.italic
                 }
 
-            self.module.write_line(style, line.text, line.start, line.end, line.layer)
+            self.module.write_line(
+                style, line.text, line.start, line.end, line.layer
+            )
         else:
             # Pass to the base method of the environment.
             Environment.write_line(self, line)
@@ -402,7 +440,8 @@ class EmbeddedEnvironment(Environment):
         return Environment.log(self, level, msg, t, logger)
 
     def _get_log_level(self):
-        if ("logging" not in self.support) or ("loglevel" not in self.attributes):
+        if ("logging" not in self.support) or \
+                ("loglevel" not in self.attributes):
             return Environment._get_log_level(self)
         return self.module.get_log_level()
 
@@ -416,7 +455,9 @@ def set_environment(environment):
     """
     global _environment
     if _environment is not None:
-        raise EnvironmentRedefinitionException("You cannot redefine the current environment.")
+        raise EnvironmentRedefinitionException(
+            "You cannot redefine the current environment."
+        )
     _environment = environment
     _environment.log(
         _environment.get_level_mapping()[logging.DEBUG],

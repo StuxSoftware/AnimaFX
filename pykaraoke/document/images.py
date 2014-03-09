@@ -24,11 +24,11 @@
 """
 Class to support images.
 """
-from pykaraoke.logs import get_internal_logger
+from pykaraoke.core.logs import get_internal_logger
 from pykaraoke.calc.graphics import AffineTransform, Vector
 from pykaraoke.calc.functions import clamp
-from pykaraoke.environment import get_environment
-from pykaraoke.structures import Line
+from pykaraoke.core.environment import get_environment
+from pykaraoke.core.structures.structures import Line
 from pykaraoke.document.base import Document
 
 __author__ = 'StuxCrystal'
@@ -46,11 +46,11 @@ class Image(Document):
     Represents an image.
 
     Please note that all lines will assume {\an5} when calculating its position.
-    Their width and height however will always be 1. Their start and end-time will
-    always be 0.
+    Their width and height however will always be 1. Their start and end-time
+    will always be 0.
 
-    Each object will have a color in the BBGGRR form as well as its alpha value and
-    its position.
+    Each object will have a color in the BBGGRR form as well as its alpha value
+    and its position.
     """
 
     def __init__(self, name, style):
@@ -85,11 +85,15 @@ class Image(Document):
             for y, pixel in enumerate(row):
                 r, g, b, a = Image._convert_color(pixel)
 
-                result.append(Line(0, 0, self.style, 5, text=PIXEL_SHAPE, extensions={
-                    "x": x, "y": y, "width": 1, "height": 1,
-                    "color": Image._join_bytes((b, g, r)),
-                    "alpha": 255 - a
-                }))
+                result.append(
+                    Line(
+                        0, 0, self.style, 5, text=PIXEL_SHAPE,
+                        extensions={
+                            "x": x, "y": y, "width": 1, "height": 1,
+                            "color": Image._join_bytes((b, g, r)),
+                            "alpha": 255 - a
+                        }
+                    ))
         return result
 
     def tansform(self, transform=AffineTransform.move(0, 0)):
@@ -97,7 +101,9 @@ class Image(Document):
         Transforms all pixels in the image.
         """
         if not isinstance(transform, AffineTransform):
-            raise ValueError("The parameter 1 has to be an affine transformation.")
+            raise ValueError(
+                "The parameter 1 has to be an affine transformation."
+            )
 
         def _transform(line):
             vp = Vector(float(line["x"]), float(line["y"]))

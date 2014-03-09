@@ -26,9 +26,9 @@ Contains the environment based documents.
 """
 __author__ = 'StuxCrystal'
 
-from pykaraoke.styles import StyleManager
-from pykaraoke.environment import get_environment
-from pykaraoke.structures import Line
+from pykaraoke.core.structures.styles import StyleManager
+from pykaraoke.core.environment import get_environment
+from pykaraoke.core.structures.structures import Line
 from pykaraoke.document.base import Document
 
 __all__ = [

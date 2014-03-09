@@ -86,12 +86,15 @@ def from_ass_time(time):
 
 def create_enum(name, *values):
     """
-    Creates a new enumerable. Automatically uses "enum" or "enum34" if available.
-    Otherwise it just creats a new type with the given values.
+    Creates a new enumerable. Automatically uses "enum" or "enum34" if
+    available. Otherwise it just creats a new type with the given values.
     """
     try:
         import enum
     except ImportError:
-        return type(name, (object,), {iname: ivalue for ivalue, iname in enumerate(values)})
+        return type(name, (object,), {
+            iname: ivalue
+            for ivalue, iname in enumerate(values)}
+        )
     else:
         return enum.IntEnum(name, " ".join(values))

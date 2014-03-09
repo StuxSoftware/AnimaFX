@@ -21,12 +21,10 @@ Represents the environment for AnimaFX.
 __author__ = 'StuxCrystal'
 import io
 
-from pykaraoke.environment import Environment, set_environment
-
+from pykaraoke.core.environment import Environment, set_environment
 from .backends import get_backend
 from .backends.base import TextExtentBackend, InputDocumentBackend, OutputDocumentBackend
 from .singleton import singleton
-
 from .version import __version__ as _version
 
 __all__ = ["AnimaFXEnvironment"]

@@ -26,8 +26,8 @@
 Returns common types of karabuilder.
 """
 from pykaraoke.utils import to_ass_time
-from pykaraoke.styles import StyleManager, Style
-from pykaraoke.environment import get_environment
+from pykaraoke.core.structures.styles import StyleManager, Style
+from pykaraoke.core.environment import get_environment
 
 __author__ = 'StuxCrystal'
 
@@ -163,7 +163,8 @@ class Line(ExtensibleObject):
     Stores the data of the syllable.
     """
 
-    def __init__(self, start, end, style, anchor, margin=(10, 10, 10), layer=0, text=None, extensions=None):
+    def __init__(self, start, end, style, anchor, margin=(10, 10, 10),
+                 layer=0, text=None, extensions=None):
         """
         Creates a new line.
         """
@@ -183,7 +184,8 @@ class Line(ExtensibleObject):
 
     def copy(self):
         result = Line(
-            self.start, self.end, self.style.copy(), self.anchor, self.margin, self.layer,
+            self.start, self.end, self.style.copy(),
+            self.anchor, self.margin, self.layer,
             extensions=self.extension.copy()
         )
         result.syllables = [syllable.copy() for syllable in self.syllables]
@@ -209,9 +211,14 @@ class Line(ExtensibleObject):
         self.raw_text = value
 
     def __repr__(self):
-        return "<Line start:%s end:%s style:%r margin:%s anchor:%d %s extensions:%r layer:%i>" % (
-            to_ass_time(self.start), to_ass_time(self.end), self.style, repr(self.margin), self.anchor,
-            (("syllables:%s" % repr(self.syllables)) if self.raw_text is None else ("text:'%s'" % self.raw_text)),
+        return "<Line start:%s end:%s style:%r margin:%s " \
+               "anchor:%d %s extensions:%r layer:%i>" % (
+            to_ass_time(self.start), to_ass_time(self.end),
+            self.style, repr(self.margin), self.anchor,
+            (
+                ("syllables:%s" % repr(self.syllables))
+                if self.raw_text is None else ("text:'%s'" % self.raw_text)
+            ),
             self.extension, self.layer
         )
 
