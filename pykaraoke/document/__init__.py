@@ -21,18 +21,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from .structures import Line
-from .document import LineBuffer
+"""
+Contains the documents-classes.
+"""
+__author__ = 'StuxCrystal'
 
-__all__ = ["Particle"]
+from pykaraoke.document.base import Document, LineBuffer
+from pykaraoke.document.environment import EnvironmentDocument
+from pykaraoke.document.environment import InputDocument, OutputDocument
+from pykaraoke.document.particles import Particle
 
-
-class Particle(LineBuffer):
-    """
-    Represents the data of a particle.
-    """
-    
-    def __init__(self, code):
-        super(Particle, self).__init__([
-            Line(0, 0, None, 5, (10,10,10), 0, code)
-        ])
+__all__ = [
+    "Document", "LineBuffer",
+    "EnvironmentDocument",
+    "InputDocument", "OutputDocument",
+    "Particle"
+]

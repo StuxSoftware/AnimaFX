@@ -21,25 +21,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-
 """
-Represents the input and the output document.
+Contains the base document class.
 """
-import math
-
-from .builders import DocumentBuilder
-from .styles import StyleManager
-from .processors import process as process_lines
-from .environment import get_environment
-from .structures import Line, Viewport
-from .utils import from_ass_time, Time
 __author__ = 'StuxCrystal'
 
+import math
+
+from pykaraoke.utils import Time, from_ass_time
+from pykaraoke.environment import get_environment
+from pykaraoke.structures import Viewport, Line
+from pykaraoke.processors import process as process_lines
 
 __all__ = [
-    "Document",
-    "LineBuffer"
-    "EnvironmentDocument", "InputDocument", "OutputDocument"
+    "Document", "LineBuffer"
 ]
 
 
@@ -545,7 +540,6 @@ class Document(object):
             return result
         return self.refactor(_mul)
 
-
 class LineBuffer(Document):
     """
     A buffer for lines.
@@ -576,78 +570,3 @@ class LineBuffer(Document):
         Terminal operation.
         """
         self.lines = []
-
-
-class EnvironmentDocument(Document):
-    """
-    Base-Class for Documents using the environment.
-    """
-
-    def get_style_manager(self):
-        """
-        Returns the style manager of the environment.
-        """
-        return StyleManager.resolve()
-
-    def get_environment(self):
-        """
-        Returns the environment the software is running under.
-        """
-        return get_environment()
-
-
-class InputDocument(EnvironmentDocument):
-    """
-    Represents a document where you can read the lines from.
-    """
-
-    def __init__(self):
-        self.lines = Line.get_lines()
-
-    def _support_line_reading(self):
-        """
-        This document supports reading
-        """
-        return True
-
-    def _support_styles(self):
-        """
-        This document supports styles if the environment supports styles.
-        """
-        return True
-
-    def _get_lines(self):
-        """
-        Returns a copy of all lines.
-        """
-        return self.lines
-
-    def get_styles(self):
-        """
-        Returns all styles if they are supported.
-        """
-        return StyleManager.resolve().get_styles()
-
-    def get_style(self, name):
-        """
-        Returns the style with the given name.
-        """
-        return StyleManager.resolve().get_style(name)
-
-
-class OutputDocument(EnvironmentDocument):
-    """
-    Represents a document for the output.
-    """
-
-    def __init__(self):
-        self.environment = get_environment()
-
-    def _support_line_writing(self):
-        """
-        This is a document to write to the main output of the environment
-        """
-        return True
-
-    def add_line(self, line):
-        self.environment.write_line(line)

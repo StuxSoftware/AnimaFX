@@ -29,7 +29,7 @@ from .calc.graphics import AffineTransform, Vector
 from .calc.functions import clamp
 from .environment import get_environment
 from .structures import Line
-from .document import Document
+from .document.base import Document
 
 __author__ = 'StuxCrystal'
 
