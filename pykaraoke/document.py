@@ -223,8 +223,9 @@ class Document(object):
 
                 # Add the syllable-data if the line has syllables.
                 if has_syllables:
+                    print(cur_line.end, last_syllable.end)
                     # Automatically detect the next syllable.
-                    while cur_line.end > last_syllable.end:
+                    while cur_line.end > line.start + last_syllable.end:
                         syl_index += 1
                         last_syllable = line.syllables[syl_index]
                         register_syllables(syl_lines)
@@ -234,7 +235,6 @@ class Document(object):
                     syl_lines.append(cur_line)
 
                 result.append(cur_line)
-
                 index += 1
 
             if has_syllables:
@@ -291,15 +291,6 @@ class Document(object):
         Copies the contents of the document
         """
         return self[:]
-
-    def build(self, fps=None, prefer_video=True):
-        """
-        Creates a build out of this document.
-        """
-        builder = DocumentBuilder(self, LineBuffer)
-        builder.fps = fps
-        builder.prefer_video = prefer_video
-        return builder
 
     def _support_line_reading(self):
         """
