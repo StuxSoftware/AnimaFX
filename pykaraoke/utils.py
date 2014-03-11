@@ -45,6 +45,29 @@ class Time(int):
         return to_ass_time(self)
 
 
+class Null(object):
+    """
+    This is the null-object. It is a singleton.
+    """
+
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Null, cls).__new__(cls)
+        return cls._instance
+
+    def __setattr__(self, key, value):
+        raise AttributeError("You cannot change '%s'.", self.__class__.__name__)
+
+    def __getattr__(self, item):
+        if item.startswith("_"):
+            return super(Null, self).__getattribute__(item)
+        raise AttributeError("Null has no attribute {item}".format(item=item))
+
+null = Null()
+
+
 def to_ass_time(time):
     """
     Converts the integer-time to a ass-time-value.
