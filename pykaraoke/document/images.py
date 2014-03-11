@@ -28,7 +28,7 @@ from pykaraoke.core.logs import get_internal_logger
 from pykaraoke.calc.graphics import AffineTransform, Vector
 from pykaraoke.calc.functions import clamp
 from pykaraoke.core.environment import get_environment
-from pykaraoke.core.structures.structures import Line
+from pykaraoke.core.structures.lines import Line
 from pykaraoke.document.base import Document
 
 __author__ = 'StuxCrystal'

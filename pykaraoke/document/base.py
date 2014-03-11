@@ -32,6 +32,7 @@ from pykaraoke.utils import Time, from_ass_time
 from pykaraoke.core.environment import get_environment
 from pykaraoke.core.structures.structures import Viewport, Line
 from pykaraoke.processors import process as process_lines
+from pykaraoke.generator.builder import KaraBuilder
 
 __all__ = [
     "Document", "LineBuffer"
@@ -92,6 +93,12 @@ class Document(object):
 
         process_lines(self._get_lines(), *processors)
         return self
+
+    def build(self):
+        """
+        Build the actual tags of the karaoke now.
+        """
+        return KaraBuilder(self)
 
     def annotate(self, func):
         """

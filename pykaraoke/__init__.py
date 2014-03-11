@@ -28,7 +28,8 @@ any environment that is capable of using "TextExtents".
 """
 __author__ = 'StuxCrystal'
 
-from pykaraoke.core.structures.structures import Style, Line, Syllable, Viewport
+from pykaraoke.core.structures.styles import Style, StyleManager
+from pykaraoke.core.structures import Line, Syllable, Viewport
 
 from pykaraoke.core.environment import get_environment, set_environment
 from pykaraoke.core.environment import Environment
@@ -43,8 +44,8 @@ from pykaraoke.utils import Time
 
 
 __all__ = [
-    "StyleManager",
-    "Style", "Line", "Syllable", "Viewport",
+    "StyleManager", "Style",
+    "Line", "Syllable", "Viewport",
     "get_environment", "set_environment",
     "Environment",
     "EnvironmentRedefinitionException", "UnsupportedOperationException",

@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from pykaraoke.core.structures.structures import Line
+from pykaraoke.core.structures.lines import Line
 from pykaraoke.document.base import LineBuffer
 
 __all__ = ["Particle"]

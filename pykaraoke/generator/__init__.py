@@ -22,16 +22,6 @@
 # SOFTWARE.
 #
 """
-The structures of the document.
+Generator for ASS-Expressions.
 """
 __author__ = 'StuxCrystal'
-
-from pykaraoke.core.structures.styles import Style, StyleManager
-from pykaraoke.core.structures.lines import Line, Syllable
-from pykaraoke.core.structures.viewport import Viewport
-
-__all__ = [
-    "Line", "Syllable",
-    "Style", "StyleManager",
-    "Viewport",
-]

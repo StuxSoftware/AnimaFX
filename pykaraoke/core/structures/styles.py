@@ -28,6 +28,7 @@ from pykaraoke.core.environment import get_environment
 __author__ = 'StuxCrystal'
 __all__ = ["StyleManager"]
 
+
 class Style(object):
     """
     Represents a simple style.
@@ -54,7 +55,7 @@ class Style(object):
         # check if the meta-data equals each other and if so, let the
         # environment calculate the values using the name of the style only.
         if environment.styles_supported:
-            orig = Style.get_style(self.name)
+            orig = StyleManager.resolve.get_style(self.name)
 
             # Check if the styles equal each other.
             if orig is not None and self == orig:
@@ -92,23 +93,6 @@ class Style(object):
         if other is None or not isinstance(other, Style):
             return False
         return self._to_dict() == other._to_dict()
-
-    @staticmethod
-    def get_all_styles():
-        """
-        Returns all styles inside the environment. If the environment
-        does not support styles, the styles in the document are used.
-        """
-        return StyleManager.resolve().get_styles()
-
-    @staticmethod
-    def get_style(name):
-        """
-        Returns the style of the environment.
-        If the environment does not support styles, the first style with the
-        same name in the input document will be used.
-        """
-        return StyleManager.resolve().get_style(name)
 
     @staticmethod
     def _from_dict(dict, name=None):

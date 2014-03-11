@@ -22,16 +22,31 @@
 # SOFTWARE.
 #
 """
-The structures of the document.
+Container for tag data.
 """
 __author__ = 'StuxCrystal'
 
-from pykaraoke.core.structures.styles import Style, StyleManager
-from pykaraoke.core.structures.lines import Line, Syllable
-from pykaraoke.core.structures.viewport import Viewport
+from pykaraoke.generator.tags import TagContainer
 
-__all__ = [
-    "Line", "Syllable",
-    "Style", "StyleManager",
-    "Viewport",
-]
+
+class KaraBuilder(object):
+    """
+    Builds the karaoke.
+    """
+
+    def __init__(self, document):
+        self.document = document
+        self.tags = TagContainer()
+
+    def tag(self, tag, func):
+        self.tags.tags(tag, func)
+        return self
+
+    def reoreder(self, *tags):
+        self.tags.reorder(*tags)
+        return self
+
+    def generate(self):
+        def _retext(line):
+            return self.tags.generate(line, line.text)
+        self.document.set_text(_retext)

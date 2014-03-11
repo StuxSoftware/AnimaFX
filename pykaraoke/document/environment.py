@@ -28,7 +28,7 @@ __author__ = 'StuxCrystal'
 
 from pykaraoke.core.structures.styles import StyleManager
 from pykaraoke.core.environment import get_environment
-from pykaraoke.core.structures.structures import Line
+from pykaraoke.core.structures.lines import Line
 from pykaraoke.document.base import Document
 
 __all__ = [
@@ -61,7 +61,7 @@ class InputDocument(EnvironmentDocument):
     """
 
     def __init__(self):
-        self.lines = Line.get_lines()
+        self.lines = Line.parse_lines(self.get_environment().get_syllables())
 
     def _support_line_reading(self):
         """
@@ -99,9 +99,6 @@ class OutputDocument(EnvironmentDocument):
     Represents a document for the output.
     """
 
-    def __init__(self):
-        self.environment = get_environment()
-
     def _support_line_writing(self):
         """
         This is a document to write to the main output of the environment
@@ -109,4 +106,4 @@ class OutputDocument(EnvironmentDocument):
         return True
 
     def add_line(self, line):
-        self.environment.write_line(line)
+        self.get_environment().write_line(line)
