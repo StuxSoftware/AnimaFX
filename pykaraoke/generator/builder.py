@@ -38,8 +38,9 @@ class KaraBuilder(object):
         self.document = document
         self.tags = TagContainer()
 
-    def tag(self, tag, func):
-        self.tags.tags(tag, func)
+    def tag(self, tag, *funcs):
+        for func in funcs:
+            self.tags.tags(tag, func)
         return self
 
     def reoreder(self, *tags):
@@ -50,3 +51,4 @@ class KaraBuilder(object):
         def _retext(line):
             return self.tags.generate(line, line.text)
         self.document.set_text(_retext)
+        return self.document

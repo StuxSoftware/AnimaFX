@@ -25,7 +25,7 @@ try:
 except ImportError:
     PythonAssOutputDocument = None
 else:
-    from pykaraoke.utils import to_ass_time
+    from pykaraoke.core.utils import to_ass_time
     from ..base import OutputDocumentBackend
 
     class PythonAssOutputDocument(OutputDocumentBackend):

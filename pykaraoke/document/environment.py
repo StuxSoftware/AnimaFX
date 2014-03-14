@@ -26,9 +26,7 @@ Contains the environment based documents.
 """
 __author__ = 'StuxCrystal'
 
-from pykaraoke.core.structures.styles import StyleManager
-from pykaraoke.core.environment import get_environment
-from pykaraoke.core.structures.lines import Line
+from pykaraoke.core.structures.viewport import Viewport
 from pykaraoke.document.base import Document
 
 __all__ = [
@@ -42,17 +40,11 @@ class EnvironmentDocument(Document):
     Base-Class for Documents using the environment.
     """
 
-    def get_style_manager(self):
-        """
-        Returns the style manager of the environment.
-        """
-        return StyleManager.resolve()
-
-    def get_environment(self):
+    def get_viewport(self):
         """
         Returns the environment the software is running under.
         """
-        return get_environment()
+        return Viewport()
 
 
 class InputDocument(EnvironmentDocument):
@@ -61,7 +53,7 @@ class InputDocument(EnvironmentDocument):
     """
 
     def __init__(self):
-        self.lines = Line.parse_lines(self.get_environment().get_syllables())
+        self.lines = self.get_viewport().lines[:]
 
     def _support_line_reading(self):
         """
@@ -85,13 +77,13 @@ class InputDocument(EnvironmentDocument):
         """
         Returns all styles if they are supported.
         """
-        return StyleManager.resolve().get_styles()
+        return self.get_viewport().style_manager.get_styles()
 
     def get_style(self, name):
         """
         Returns the style with the given name.
         """
-        return StyleManager.resolve().get_style(name)
+        return self.get_viewport().style_manager.get_styles()
 
 
 class OutputDocument(EnvironmentDocument):
@@ -106,4 +98,4 @@ class OutputDocument(EnvironmentDocument):
         return True
 
     def add_line(self, line):
-        self.get_environment().write_line(line)
+        self.get_viewport().write(line)

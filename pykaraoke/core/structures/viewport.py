@@ -77,6 +77,9 @@ class Viewport(object):
         """
         return Line.parse_lines(self.environment.get_syllables())
 
+    def write(self, line):
+        self.environment.write_line(line)
+
     @property
     def styles(self):
         """
@@ -84,3 +87,6 @@ class Viewport(object):
         """
         return StyleManager.resolve().get_styles()
 
+    @property
+    def style_manager(self):
+        return StyleManager.resolve()

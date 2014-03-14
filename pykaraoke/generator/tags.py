@@ -82,7 +82,7 @@ class TagContainer(object):
         if not callable(func):
             _old = func
             func = lambda pre, line: _old
-        self.tags.get(name, []).append(func)
+        self.tags.setdefault(name, []).append(func)
         if not self.och and name in self.order:
             self.order.append(name)
 

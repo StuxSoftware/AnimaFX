@@ -30,7 +30,7 @@ __author__ = 'StuxCrystal'
 from pykaraoke.core.structures.structures import ExtensibleObject
 from pykaraoke.core.structures.styles import Style, StyleManager
 from pykaraoke.core.environment import get_environment
-from pykaraoke.utils import to_ass_time
+from pykaraoke.core.utils import to_ass_time
 
 __all__ = [
     "Syllable", "Line"

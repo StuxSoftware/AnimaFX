@@ -195,6 +195,37 @@ class Vector(tuple):
     def __repr__(self):
         return "<Vector x:%f y:%f z:%f>" % self
 
+    @classmethod
+    def from_object(cls, obj, an=0):
+        """
+        Loads the position from the object-
+        """
+        # Use "x", "y" for default AN.
+        if an == 0:
+            refx, refy = "x", "y"
+        else:
+            # Get Ref-X
+            if an in (1, 2, 3):
+                refx = "bottom"
+            elif an in (4, 5, 6):
+                refx = "middle"
+            elif an in (7, 8, 9):
+                refx = "top"
+            else:
+                raise ValueError("Invalid value.")
+
+            # Then Ref Y
+            if an in (1, 4, 7):
+                refy = "left"
+            elif an in (2, 5, 8):
+                refy = "center"
+            elif an in (3, 6, 9):
+                refy = "right"
+            else:
+                raise ValueError("Invalid value.")
+
+        return cls(obj[refx], obj[refy])
+
 
 class AffineTransform(tuple):
     """
@@ -205,7 +236,9 @@ class AffineTransform(tuple):
         if row2 is not None and row3 is not None:
             rows = (rows, row2, row3)
         elif row2 is not None or row3 is not None:
-            raise ValueError("One or three arguments have to be passed to this class.")
+            raise ValueError(
+                "One or three arguments have to be passed to this class."
+            )
 
         if len(rows) != 3:
             raise ValueError("Invalid transform matrix")

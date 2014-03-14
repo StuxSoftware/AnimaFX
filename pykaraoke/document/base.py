@@ -28,9 +28,9 @@ __author__ = 'StuxCrystal'
 
 import math
 
-from pykaraoke.utils import Time, from_ass_time
+from pykaraoke.core.utils import Time, from_ass_time
 from pykaraoke.core.environment import get_environment
-from pykaraoke.core.structures.structures import Viewport, Line
+from pykaraoke.core.structures import Viewport, Line
 from pykaraoke.processors import process as process_lines
 from pykaraoke.generator.builder import KaraBuilder
 
@@ -226,7 +226,6 @@ class Document(object):
 
                 # Add the syllable-data if the line has syllables.
                 if has_syllables:
-                    print(cur_line.end, last_syllable.end)
                     # Automatically detect the next syllable.
                     while cur_line.end > line.start + last_syllable.end:
                         syl_index += 1
