@@ -25,7 +25,7 @@
 """
 Contains processors for sizes and placements.
 """
-from pykaraoke.core.structures.structures import Viewport
+from pykaraoke.core.structures import Viewport
 from pykaraoke.processors.base import ProcessingContext, Processor
 from pykaraoke.processors.multi_processor import SelectiveProcessor
 
