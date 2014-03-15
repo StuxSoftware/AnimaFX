@@ -62,6 +62,7 @@ def get_internal_logger():
         _logger.setLevel(get_environment().log_level)
     return _logger
 
+
 def get_logger(name=None):
     if name:
         logger = logging.getLogger(name)
