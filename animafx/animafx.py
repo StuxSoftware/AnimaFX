@@ -58,7 +58,16 @@ class AnimaFX(object):
     def stop(self):
         self.environment.dump(self.outstream)
 
-
+    def log(self, level, msg, t, logger):
+        print(
+            "[{logger}][{level}][{time}] {message}".format(
+                logger=logger,
+                level=level,
+                time=t,
+                message=msg
+            ),
+            file=sys.stderr
+        )
 
     @classmethod
     def main(cls, args=("animafx.py",)):

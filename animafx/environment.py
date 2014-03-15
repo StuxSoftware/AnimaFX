@@ -20,6 +20,8 @@ Represents the environment for AnimaFX.
 """
 __author__ = 'StuxCrystal'
 import io
+import time
+import logging
 
 from pykaraoke.core.environment import Environment, set_environment
 from .backends import get_backend
@@ -104,6 +106,13 @@ class AnimaFXEnvironment(singleton(Environment)):
             "end": line.end,
             "layer": line.layer
         })
+
+    def log(self, level, msg, t, logger):
+        self.animafx.log(
+            logger, logging.getLevelName(level),
+            time.strftime("%X", time.gmtime(t)),
+            msg
+        )
 
     @property
     def support(self):

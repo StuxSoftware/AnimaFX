@@ -24,6 +24,9 @@ import code
 import tokenize
 import traceback
 
+import time
+import logging
+
 from animafx.version import __version__ as version
 
 class CodeHandler(object):
@@ -54,6 +57,7 @@ class ConsoleHandler(object):
             return False
         return True
 
+
 class FileHandler(object):
 
     def __init__(self, script):
@@ -74,8 +78,8 @@ class FileHandler(object):
         }
 
         with open(self.script, 'r', encoding=encoding) as file:
-            # Do not inherit any 'from future import ...'-statements that may be used
-            # by AnimaFX.
+            # Do not inherit any 'from future import ...'-statements
+            # that may be used by AnimaFX.
             # Additionally set the current filename.
             module = compile(file.read(), self.script, 'exec', False)
 

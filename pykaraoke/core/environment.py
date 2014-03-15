@@ -91,20 +91,26 @@ class Environment(object):
         # This makes sure the correct height or ascent is returned.
         extents = self._text_extents(style, text)
 
-        # Check if spacing is grater than 0.
-        if spacing > 0:
-            # Calculate the width manually.
-            width = 0
+        # If the "raw_extents" attribute is given, this check will
+        # not be performed.
+        # Please note that the height will still be calculated
+        # if "ascent" and "descent" is given instead of "height".
+        if "raw_extents" not in self.attributes:
 
-            # Calculate the string bounds for
-            for char in text:
-                data = self._text_extents(style, char)
-                width += data["width"] + spacing
-            else:
-                # If the text is empty, enforce the calculation of the
-                # text width.
-                width = self._text_extents(style, "")["width"]
-            extents["width"] = width
+            # Check if spacing is grater than 0.
+            if spacing > 0:
+                # Calculate the width manually.
+                width = 0
+
+                # Calculate the string bounds for
+                for char in text:
+                    data = self._text_extents(style, char)
+                    width += data["width"] + spacing
+                else:
+                    # If the text is empty, enforce the calculation of the
+                    # text width.
+                    width = self._text_extents(style, "")["width"]
+                extents["width"] = width
 
         # Calculate the height manually if they are not provided
         # by the environment.
@@ -240,6 +246,8 @@ class EmbeddedEnvironment(Environment):
     | |                      Use "environment.stylemanager" to get the style
     | |                      manager.
     | |                      (Only supported in non embedded environments)
+    | |
+    | | > "raw_extents"    : This environment does also support font-spacing.
     |
     | "_environment.text_extents(
     |      dict[font=None, size=0, bold=False, italic=False] or stylename,
